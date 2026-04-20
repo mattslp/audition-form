@@ -164,8 +164,9 @@ document.querySelectorAll('.tab').forEach(function(tab) {
 
 // ── LOAD DATA ─────────────────────────────────────────
 function loadAll() {
-  loadSubmissions();
-  loadShows();
+  loadShows(function() {
+    loadSubmissions();
+  });
 }
 
 function loadSubmissions() {
@@ -177,13 +178,14 @@ function loadSubmissions() {
   });
 }
 
-function loadShows() {
+function loadShows(callback) {
   jsonp('slShows', { action: 'getShows' }, function(r) {
     if (r && r.success) {
       shows = r.shows;
       renderShows();
       updateShowFilters();
     }
+    if (callback) callback();
   });
 }
 
