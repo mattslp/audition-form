@@ -6,505 +6,119 @@
   <title>Audition Submission — Street Lamp</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: 'Quasimoda', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #fff;
-      color: #1a1a1a;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
+      background: #fff; color: #1a1a1a; line-height: 1.6; -webkit-font-smoothing: antialiased;
     }
-
-    .container {
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 40px 24px 60px;
-    }
-
+    .container { max-width: 640px; margin: 0 auto; padding: 40px 24px 60px; }
     .form-header { text-align: center; margin-bottom: 36px; }
-    .form-header h1 {
-      font-family: 'Komet', Georgia, serif;
-      font-size: 2rem; font-weight: 700; letter-spacing: -0.02em;
-      line-height: 1.2; margin: 0;
-    }
+    .form-header h1 { font-family: 'Komet', Georgia, serif; font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
     .form-header p { margin-top: 10px; color: #666; font-size: 0.95rem; }
-
-    .form-section {
-      background: #ffffff; border: 1px solid #ddd;
-      border-radius: 6px; padding: 28px 28px 20px;
-      margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    .section-title {
-      font-family: 'Komet', Georgia, serif;
-      font-size: 1.15rem; font-weight: 600;
-      margin: 0 0 20px; padding-bottom: 12px;
-      border-bottom: 1px solid #ddd;
-    }
-
-    .field { margin-bottom: 18px; }
-    .field:last-child { margin-bottom: 8px; }
+    .form-section { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 28px 28px 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .section-title { font-family: 'Komet', Georgia, serif; font-size: 1.15rem; font-weight: 600; margin: 0 0 20px; padding-bottom: 12px; border-bottom: 1px solid #ddd; }
+    .field { margin-bottom: 18px; } .field:last-child { margin-bottom: 8px; }
     label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 6px; }
-    .req { color: #333; margin-left: 2px; }
-    .opt { font-weight: 400; color: #888; font-size: 0.8rem; }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="tel"],
-    input[type="number"],
-    select,
-    textarea {
-      width: 100%; padding: 10px 14px;
-      font-family: inherit; font-size: 0.95rem; color: #1a1a1a;
-      background: #f7f7f7; border: 1.5px solid #ccc;
-      border-radius: 6px; outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+    .req { color: #333; margin-left: 2px; } .opt { font-weight: 400; color: #888; font-size: 0.8rem; }
+    input[type="text"], input[type="email"], input[type="tel"], input[type="number"], select, textarea {
+      width: 100%; padding: 10px 14px; font-family: inherit; font-size: 0.95rem; color: #1a1a1a;
+      background: #f7f7f7; border: 1.5px solid #ccc; border-radius: 6px; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
     }
-    input:focus, select:focus, textarea:focus {
-      border-color: #1a1a1a; box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
-    }
+    input:focus, select:focus, textarea:focus { border-color: #1a1a1a; box-shadow: 0 0 0 3px rgba(0,0,0,0.06); }
     textarea { resize: vertical; min-height: 90px; }
-
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    @media (max-width: 480px) {
-      .row { grid-template-columns: 1fr; }
-      .container { padding: 12px 16px 48px; }
-      .form-section { padding: 20px 18px 16px; }
-    }
-
-    .upload-area {
-      border: 2px dashed #ddd; border-radius: 6px;
-      padding: 32px 20px; text-align: center; cursor: pointer;
-      background: #f7f7f7; transition: border-color 0.2s, background 0.2s;
-    }
+    @media (max-width: 480px) { .row { grid-template-columns: 1fr; } .container { padding: 24px 16px 48px; } .form-section { padding: 20px 18px 16px; } }
+    .upload-area { border: 2px dashed #ddd; border-radius: 6px; padding: 32px 20px; text-align: center; cursor: pointer; background: #f7f7f7; transition: border-color 0.2s, background 0.2s; }
     .upload-area:hover, .upload-area.dragover { border-color: #333; background: rgba(0,0,0,0.04); }
     .upload-area input[type="file"] { display: none; }
     .upload-icon { width: 40px; height: 40px; margin: 0 auto 12px; opacity: 0.45; }
-    .upload-label { font-size: 0.95rem; font-weight: 500; }
-    .upload-label span { color: #333; text-decoration: underline; text-underline-offset: 2px; }
+    .upload-label { font-size: 0.95rem; font-weight: 500; } .upload-label span { color: #333; text-decoration: underline; text-underline-offset: 2px; }
     .upload-hint { font-size: 0.8rem; color: #888; margin-top: 6px; }
-
-    .file-preview {
-      display: none; align-items: center; gap: 12px;
-      background: #f7f7f7; border: 1.5px solid #ddd;
-      border-radius: 6px; padding: 12px 16px; margin-top: 12px;
-    }
-    .file-preview.active { display: flex; }
-    .file-info { flex: 1; min-width: 0; }
+    .file-preview { display: none; align-items: center; gap: 12px; background: #f7f7f7; border: 1.5px solid #ddd; border-radius: 6px; padding: 12px 16px; margin-top: 12px; }
+    .file-preview.active { display: flex; } .file-info { flex: 1; min-width: 0; }
     .file-name { font-size: 0.875rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .file-size { font-size: 0.78rem; color: #888; }
-    .file-remove { background: none; border: none; cursor: pointer; color: #888; font-size: 1.3rem; padding: 4px; line-height: 1; }
-    .file-remove:hover { color: #c0392b; }
-
-    .progress-container { display: none; margin-top: 12px; }
-    .progress-container.active { display: block; }
+    .file-remove { background: none; border: none; cursor: pointer; color: #888; font-size: 1.3rem; padding: 4px; line-height: 1; } .file-remove:hover { color: #c0392b; }
+    .progress-container { display: none; margin-top: 12px; } .progress-container.active { display: block; }
     .progress-bar-bg { width: 100%; height: 6px; background: #ddd; border-radius: 3px; overflow: hidden; }
     .progress-fill { height: 100%; width: 0%; background: #333; border-radius: 3px; transition: width 0.3s ease; }
     .progress-text { font-size: 0.78rem; color: #888; margin-top: 4px; text-align: center; }
-
-    .submit-btn {
-      width: 100%; padding: 14px 28px;
-      font-family: inherit; font-size: 1rem; font-weight: 600;
-      letter-spacing: 0.02em; color: #fff; background: #1a1a1a;
-      border: none; border-radius: 6px; cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-    }
-    .submit-btn:hover { background: #333; }
-    .submit-btn:active { transform: scale(0.995); }
+    .submit-btn { width: 100%; padding: 14px 28px; font-family: inherit; font-size: 1rem; font-weight: 600; letter-spacing: 0.02em; color: #fff; background: #1a1a1a; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+    .submit-btn:hover { background: #333; } .submit-btn:active { transform: scale(0.995); }
     .submit-btn:disabled { background: #aaa; cursor: not-allowed; transform: none; }
-
     .message { display: none; padding: 14px 18px; border-radius: 6px; font-size: 0.9rem; margin-bottom: 20px; line-height: 1.5; }
     .message.error { display: block; background: #f5f5f5; color: #c0392b; border: 1px solid rgba(0,0,0,0.15); }
     .message.success { display: block; background: #f0f0f0; color: #333; border: 1px solid rgba(0,0,0,0.1); }
-
     .field-error input, .field-error select, .field-error textarea { border-color: #c0392b; }
-    .err-msg { display: none; font-size: 0.78rem; color: #c0392b; margin-top: 3px; }
-    .field-error .err-msg { display: block; }
-
-    .success-state { display: none; text-align: center; padding: 60px 24px; }
-    .success-state.active { display: block; }
+    .err-msg { display: none; font-size: 0.78rem; color: #c0392b; margin-top: 3px; } .field-error .err-msg { display: block; }
+    .success-state { display: none; text-align: center; padding: 60px 24px; } .success-state.active { display: block; }
     .success-check { width: 64px; height: 64px; margin: 0 auto 20px; background: #f0f0f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
     .success-state h2 { font-family: 'Komet', Georgia, serif; font-size: 1.5rem; font-weight: 600; margin-bottom: 8px; }
     .success-state p { color: #888; font-size: 0.95rem; }
-    .reset-link { display: inline-block; margin-top: 24px; color: #333; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 0.9rem; }
-    .reset-link:hover { color: #1a1a1a; }
+    .reset-link { display: inline-block; margin-top: 24px; color: #333; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 0.9rem; } .reset-link:hover { color: #1a1a1a; }
   </style>
 </head>
 <body>
-
 <div class="container">
-  <div class="form-header">
-    <h1>Audition Submission</h1>
-    <p>Upload your audition materials for Street Lamp</p>
-  </div>
-
+  <div class="form-header"><h1>Audition Submission</h1><p>Upload your audition materials for Street Lamp</p></div>
   <div id="slMsg" class="message"></div>
-
   <form id="slForm" novalidate>
-    <div class="form-section">
-      <div class="section-title">Personal Information</div>
-      <div class="field">
-        <label for="sl_fullName">Full Name <span class="req">*</span></label>
-        <input type="text" id="sl_fullName" placeholder="First and Last Name" required>
-        <div class="err-msg">Please enter your name.</div>
-      </div>
-      <div class="row">
-        <div class="field">
-          <label for="sl_email">Email <span class="req">*</span></label>
-          <input type="email" id="sl_email" placeholder="you@example.com" required>
-          <div class="err-msg">Please enter a valid email.</div>
-        </div>
-        <div class="field">
-          <label for="sl_phone">Phone <span class="req">*</span></label>
-          <input type="tel" id="sl_phone" placeholder="(555) 555-5555" required>
-          <div class="err-msg">Please enter your phone number.</div>
-        </div>
-      </div>
-      <div class="field">
-        <label for="sl_age">Age <span class="opt">(optional)</span></label>
-        <input type="number" id="sl_age" min="4" max="120" placeholder="e.g. 15">
-      </div>
+    <div class="form-section"><div class="section-title">Personal Information</div>
+      <div class="field"><label for="sl_fullName">Full Name <span class="req">*</span></label><input type="text" id="sl_fullName" placeholder="First and Last Name" required><div class="err-msg">Please enter your name.</div></div>
+      <div class="row"><div class="field"><label for="sl_email">Email <span class="req">*</span></label><input type="email" id="sl_email" placeholder="you@example.com" required><div class="err-msg">Please enter a valid email.</div></div>
+      <div class="field"><label for="sl_phone">Phone <span class="req">*</span></label><input type="tel" id="sl_phone" placeholder="(555) 555-5555" required><div class="err-msg">Please enter your phone number.</div></div></div>
+      <div class="field"><label for="sl_age">Age <span class="opt">(optional)</span></label><input type="number" id="sl_age" min="4" max="120" placeholder="e.g. 15"></div>
     </div>
-
-    <div class="form-section">
-      <div class="section-title">Audition Details</div>
-      <div class="field">
-        <label for="sl_location">Location <span class="req">*</span></label>
-        <select id="sl_location" required>
-          <option value="" disabled selected>Select a location</option>
-          <option value="Rising Sun">Rising Sun</option>
-          <option value="Kennett Square">Kennett Square</option>
-        </select>
-        <div class="err-msg">Please select a location.</div>
-      </div>
-      <div class="field">
-        <label for="sl_show">Show / Production <span class="req">*</span></label>
-        <input type="text" id="sl_show" placeholder="e.g. Annie, Seussical, Matilda Jr." required>
-        <div class="err-msg">Please enter the show name.</div>
-      </div>
-      <div class="field">
-        <label for="sl_role">Desired Role(s) <span class="req">*</span></label>
-        <input type="text" id="sl_role" placeholder="e.g. Annie, Cat in the Hat, Any role" required>
-        <div class="err-msg">Please enter at least one role.</div>
-      </div>
-      <div class="field">
-        <label for="sl_experience">Previous Experience <span class="opt">(optional)</span></label>
-        <textarea id="sl_experience" rows="3" placeholder="List any relevant theatre, singing, or dance experience..."></textarea>
-      </div>
-      <div class="field">
-        <label for="sl_conflicts">Schedule Conflicts <span class="opt">(optional)</span></label>
-        <textarea id="sl_conflicts" rows="2" placeholder="List any dates you are unavailable for rehearsals or performances..."></textarea>
-      </div>
+    <div class="form-section"><div class="section-title">Audition Details</div>
+      <div class="field"><label for="sl_location">Location <span class="req">*</span></label><select id="sl_location" required><option value="" disabled selected>Select a location</option><option value="Rising Sun">Rising Sun</option><option value="Kennett Square">Kennett Square</option></select><div class="err-msg">Please select a location.</div></div>
+      <div class="field"><label for="sl_show">Show / Production <span class="req">*</span></label><input type="text" id="sl_show" placeholder="e.g. Annie, Seussical, Matilda Jr." required><div class="err-msg">Please enter the show name.</div></div>
+      <div class="field"><label for="sl_role">Desired Role(s) <span class="req">*</span></label><input type="text" id="sl_role" placeholder="e.g. Annie, Cat in the Hat, Any role" required><div class="err-msg">Please enter at least one role.</div></div>
+      <div class="field"><label for="sl_experience">Previous Experience <span class="opt">(optional)</span></label><textarea id="sl_experience" rows="3" placeholder="List any relevant theatre, singing, or dance experience..."></textarea></div>
+      <div class="field"><label for="sl_conflicts">Schedule Conflicts <span class="opt">(optional)</span></label><textarea id="sl_conflicts" rows="2" placeholder="List any dates you are unavailable for rehearsals or performances..."></textarea></div>
     </div>
-
-    <div class="form-section">
-      <div class="section-title">Audition Video</div>
-      <p style="font-size:0.875rem; color:#888; margin-bottom:16px;">Please upload a video file or paste a YouTube link (at least one is required).</p>
-
-      <div class="field">
-        <label>Upload Video File <span class="opt">(optional)</span></label>
-        <div class="upload-area" id="slUploadArea">
-          <input type="file" id="slFileInput" accept="video/*">
-          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="17 8 12 3 7 8"/>
-            <line x1="12" y1="3" x2="12" y2="15"/>
-          </svg>
-          <div class="upload-label">Drag &amp; drop or <span>browse</span></div>
-          <div class="upload-hint">Video files up to 50 MB</div>
-        </div>
-        <div class="file-preview" id="slFilePreview">
-          <div class="file-info">
-            <div class="file-name" id="slFileName"></div>
-            <div class="file-size" id="slFileSize"></div>
-          </div>
-          <button type="button" class="file-remove" id="slFileRemove" title="Remove file">&times;</button>
-        </div>
-        <div class="progress-container" id="slProgress">
-          <div class="progress-bar-bg"><div class="progress-fill" id="slProgressFill"></div></div>
-          <div class="progress-text" id="slProgressText">Preparing upload...</div>
-        </div>
+    <div class="form-section"><div class="section-title">Audition Video</div>
+      <p style="font-size:0.875rem;color:#888;margin-bottom:16px;">Please upload a video file or paste a YouTube link (at least one is required).</p>
+      <div class="field"><label>Upload Video File <span class="opt">(optional)</span></label>
+        <div class="upload-area" id="slUploadArea"><input type="file" id="slFileInput" accept="video/*"><svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><div class="upload-label">Drag &amp; drop or <span>browse</span></div><div class="upload-hint">Video files up to 50 MB</div></div>
+        <div class="file-preview" id="slFilePreview"><div class="file-info"><div class="file-name" id="slFileName"></div><div class="file-size" id="slFileSize"></div></div><button type="button" class="file-remove" id="slFileRemove" title="Remove file">&times;</button></div>
+        <div class="progress-container" id="slProgress"><div class="progress-bar-bg"><div class="progress-fill" id="slProgressFill"></div></div><div class="progress-text" id="slProgressText">Preparing upload...</div></div>
       </div>
-
-      <div class="field">
-        <label for="sl_youtubeUrl">YouTube Link <span class="opt">(optional)</span></label>
-        <input type="text" id="sl_youtubeUrl" placeholder="https://www.youtube.com/watch?v=...">
-        <div class="err-msg">Please enter a valid YouTube URL.</div>
-      </div>
-      <div class="field">
-        <label for="sl_notes">Additional Notes <span class="opt">(optional)</span></label>
-        <textarea id="sl_notes" rows="2" placeholder="Anything else you'd like us to know..."></textarea>
-      </div>
+      <div class="field"><label for="sl_youtubeUrl">YouTube Link <span class="opt">(optional)</span></label><input type="text" id="sl_youtubeUrl" placeholder="https://www.youtube.com/watch?v=..."><div class="err-msg">Please enter a valid YouTube URL.</div></div>
+      <div class="field"><label for="sl_notes">Additional Notes <span class="opt">(optional)</span></label><textarea id="sl_notes" rows="2" placeholder="Anything else you'd like us to know..."></textarea></div>
     </div>
-
     <div class="form-section" style="padding-bottom:28px;">
-      <div class="field" style="display:flex; align-items:center; gap:10px; margin-bottom:18px;">
-        <input type="checkbox" id="sl_sendCopy" style="width:auto; accent-color:#333; cursor:pointer;">
-        <label for="sl_sendCopy" style="margin:0; font-weight:400; font-size:0.9rem; cursor:pointer;">Send me a copy of this submission</label>
-      </div>
+      <div class="field" style="display:flex;align-items:center;gap:10px;margin-bottom:18px;"><input type="checkbox" id="sl_sendCopy" style="width:auto;accent-color:#333;cursor:pointer;"><label for="sl_sendCopy" style="margin:0;font-weight:400;font-size:0.9rem;cursor:pointer;">Send me a copy of this submission</label></div>
       <button type="submit" class="submit-btn" id="slSubmitBtn">Submit Audition</button>
     </div>
   </form>
-
-  <div class="success-state" id="slSuccess">
-    <div class="success-check">
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-    </div>
-    <h2>Submission Received!</h2>
-    <p>Thank you for your audition submission. We'll review your materials and be in touch soon.</p>
-    <a class="reset-link" id="slResetLink">Submit another audition</a>
-  </div>
+  <div class="success-state" id="slSuccess"><div class="success-check"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><h2>Submission Received!</h2><p>Thank you for your audition submission. We'll review your materials and be in touch soon.</p><a class="reset-link" id="slResetLink">Submit another audition</a></div>
 </div>
-
 <script>
 (function() {
   var APPS_SCRIPT_URL = 'https://script.google.com/a/macros/streetlamp.org/s/AKfycbzdPHLpGNRG5ORBCneZH2TGmzM0Hi2xJnhDKkXM3sn0IbvzD18CWUDpZ_AuTPTvpie5/exec';
-
-  var selectedFile = null;
-  var MAX_SIZE = 50 * 1024 * 1024;
-
-  var form       = document.getElementById('slForm');
-  var submitBtn  = document.getElementById('slSubmitBtn');
-  var globalMsg  = document.getElementById('slMsg');
-  var uploadArea = document.getElementById('slUploadArea');
-  var fileInput  = document.getElementById('slFileInput');
-  var filePrev   = document.getElementById('slFilePreview');
-  var fileNameEl = document.getElementById('slFileName');
-  var fileSizeEl = document.getElementById('slFileSize');
-  var fileRemove = document.getElementById('slFileRemove');
-  var progressC  = document.getElementById('slProgress');
-  var progFill   = document.getElementById('slProgressFill');
-  var progText   = document.getElementById('slProgressText');
-  var successEl  = document.getElementById('slSuccess');
-  var resetLink  = document.getElementById('slResetLink');
-
-  // ── File handling ───────────────────────────────────
-  uploadArea.addEventListener('click', function() { fileInput.click(); });
-  uploadArea.addEventListener('dragover', function(e) { e.preventDefault(); uploadArea.classList.add('dragover'); });
-  uploadArea.addEventListener('dragleave', function() { uploadArea.classList.remove('dragover'); });
-  uploadArea.addEventListener('drop', function(e) {
-    e.preventDefault(); uploadArea.classList.remove('dragover');
-    if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+  var selectedFile = null, MAX_SIZE = 50 * 1024 * 1024;
+  var form=document.getElementById('slForm'),submitBtn=document.getElementById('slSubmitBtn'),globalMsg=document.getElementById('slMsg'),uploadArea=document.getElementById('slUploadArea'),fileInput=document.getElementById('slFileInput'),filePrev=document.getElementById('slFilePreview'),fileNameEl=document.getElementById('slFileName'),fileSizeEl=document.getElementById('slFileSize'),fileRemove=document.getElementById('slFileRemove'),progressC=document.getElementById('slProgress'),progFill=document.getElementById('slProgressFill'),progText=document.getElementById('slProgressText'),successEl=document.getElementById('slSuccess'),resetLink=document.getElementById('slResetLink');
+  uploadArea.addEventListener('click',function(){fileInput.click()});uploadArea.addEventListener('dragover',function(e){e.preventDefault();uploadArea.classList.add('dragover')});uploadArea.addEventListener('dragleave',function(){uploadArea.classList.remove('dragover')});uploadArea.addEventListener('drop',function(e){e.preventDefault();uploadArea.classList.remove('dragover');if(e.dataTransfer.files.length)handleFile(e.dataTransfer.files[0])});fileInput.addEventListener('change',function(){if(fileInput.files.length)handleFile(fileInput.files[0])});fileRemove.addEventListener('click',clearFile);
+  function handleFile(f){if(f.size>MAX_SIZE){showMsg('File is too large. Maximum size is 50 MB.','error');return}selectedFile=f;fileNameEl.textContent=f.name;fileSizeEl.textContent=formatBytes(f.size);filePrev.classList.add('active');uploadArea.style.display='none';hideMsg()}
+  function clearFile(){selectedFile=null;fileInput.value='';filePrev.classList.remove('active');uploadArea.style.display=''}
+  function formatBytes(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(1)+' MB'}
+  var reqIds=['sl_fullName','sl_email','sl_phone','sl_location','sl_show','sl_role'];
+  function validate(){var ok=true;reqIds.forEach(function(id){var el=document.getElementById(id),w=el.closest('.field');if(!el.value.trim()){w.classList.add('field-error');ok=false}else{w.classList.remove('field-error')}});var em=document.getElementById('sl_email');if(em.value.trim()&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value.trim())){em.closest('.field').classList.add('field-error');ok=false}return ok}
+  document.querySelectorAll('input,textarea,select').forEach(function(el){el.addEventListener('input',function(){var f=el.closest('.field');if(f)f.classList.remove('field-error')})});
+  form.addEventListener('submit',function(e){e.preventDefault();hideMsg();if(!validate()){showMsg('Please fill in all required fields.','error');var f=document.querySelector('.field-error');if(f)f.scrollIntoView({behavior:'smooth',block:'center'});return}
+    var p={fullName:document.getElementById('sl_fullName').value.trim(),email:document.getElementById('sl_email').value.trim(),phone:document.getElementById('sl_phone').value.trim(),age:document.getElementById('sl_age').value.trim(),location:document.getElementById('sl_location').value.trim(),show:document.getElementById('sl_show').value.trim(),role:document.getElementById('sl_role').value.trim(),experience:document.getElementById('sl_experience').value.trim(),conflicts:document.getElementById('sl_conflicts').value.trim(),notes:document.getElementById('sl_notes').value.trim(),youtubeUrl:document.getElementById('sl_youtubeUrl').value.trim(),sendCopy:document.getElementById('sl_sendCopy').checked};
+    if(p.youtubeUrl&&!/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\/.+/.test(p.youtubeUrl)){document.getElementById('sl_youtubeUrl').closest('.field').classList.add('field-error');showMsg('Please enter a valid YouTube URL.','error');return}
+    if(!selectedFile&&!p.youtubeUrl){showMsg('Please upload a video file or provide a YouTube link.','error');return}
+    submitBtn.disabled=true;submitBtn.textContent='Submitting...';
+    if(selectedFile){progressC.classList.add('active');progText.textContent='Reading video...';progFill.style.width='10%';readBase64(selectedFile).then(function(b64){p.fileName=selectedFile.name;p.fileType=selectedFile.type||'video/mp4';p.fileData=b64;progText.textContent='Uploading...';progFill.style.width='30%';postToAppsScript(p)}).catch(function(){showMsg('Could not read the file. Please try again.','error');resetBtn()})}else{submitViaJSONP(p)}
   });
-  fileInput.addEventListener('change', function() { if (fileInput.files.length) handleFile(fileInput.files[0]); });
-  fileRemove.addEventListener('click', clearFile);
-
-  function handleFile(file) {
-    if (file.size > MAX_SIZE) { showMsg('File is too large. Maximum size is 50 MB.', 'error'); return; }
-    selectedFile = file;
-    fileNameEl.textContent = file.name;
-    fileSizeEl.textContent = formatBytes(file.size);
-    filePrev.classList.add('active');
-    uploadArea.style.display = 'none';
-    hideMsg();
-  }
-
-  function clearFile() {
-    selectedFile = null; fileInput.value = '';
-    filePrev.classList.remove('active');
-    uploadArea.style.display = '';
-  }
-
-  function formatBytes(b) {
-    if (b < 1024) return b + ' B';
-    if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
-    return (b / 1048576).toFixed(1) + ' MB';
-  }
-
-  // ── Validation ──────────────────────────────────────
-  var reqIds = ['sl_fullName', 'sl_email', 'sl_phone', 'sl_location', 'sl_show', 'sl_role'];
-
-  function validate() {
-    var ok = true;
-    reqIds.forEach(function(id) {
-      var el = document.getElementById(id);
-      var wrap = el.closest('.field');
-      if (!el.value.trim()) { wrap.classList.add('field-error'); ok = false; }
-      else { wrap.classList.remove('field-error'); }
-    });
-    var em = document.getElementById('sl_email');
-    if (em.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value.trim())) {
-      em.closest('.field').classList.add('field-error'); ok = false;
-    }
-    return ok;
-  }
-
-  document.querySelectorAll('input, textarea, select').forEach(function(el) {
-    el.addEventListener('input', function() {
-      var f = el.closest('.field');
-      if (f) f.classList.remove('field-error');
-    });
-  });
-
-  // ── Submit ──────────────────────────────────────────
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    hideMsg();
-
-    if (!validate()) {
-      showMsg('Please fill in all required fields.', 'error');
-      var first = document.querySelector('.field-error');
-      if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
-    }
-
-    var payload = {
-      fullName:   document.getElementById('sl_fullName').value.trim(),
-      email:      document.getElementById('sl_email').value.trim(),
-      phone:      document.getElementById('sl_phone').value.trim(),
-      age:        document.getElementById('sl_age').value.trim(),
-      location:   document.getElementById('sl_location').value.trim(),
-      show:       document.getElementById('sl_show').value.trim(),
-      role:       document.getElementById('sl_role').value.trim(),
-      experience: document.getElementById('sl_experience').value.trim(),
-      conflicts:  document.getElementById('sl_conflicts').value.trim(),
-      notes:      document.getElementById('sl_notes').value.trim(),
-      youtubeUrl: document.getElementById('sl_youtubeUrl').value.trim(),
-      sendCopy:   document.getElementById('sl_sendCopy').checked
-    };
-
-    if (payload.youtubeUrl && !/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\/.+/.test(payload.youtubeUrl)) {
-      document.getElementById('sl_youtubeUrl').closest('.field').classList.add('field-error');
-      showMsg('Please enter a valid YouTube URL.', 'error');
-      return;
-    }
-
-    if (!selectedFile && !payload.youtubeUrl) {
-      showMsg('Please upload a video file or provide a YouTube link.', 'error');
-      return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
-
-    if (selectedFile) {
-      // Read file and POST everything together
-      progressC.classList.add('active');
-      progText.textContent = 'Reading video...';
-      progFill.style.width = '10%';
-
-      readBase64(selectedFile).then(function(b64) {
-        payload.fileName = selectedFile.name;
-        payload.fileType = selectedFile.type || 'video/mp4';
-        payload.fileData = b64;
-
-        progText.textContent = 'Uploading...';
-        progFill.style.width = '30%';
-
-        postToAppsScript(payload);
-      }).catch(function() {
-        showMsg('Could not read the file. Please try again.', 'error');
-        resetBtn();
-      });
-    } else {
-      // No file — use JSONP for speed
-      submitViaJSONP(payload);
-    }
-  });
-
-  // ── POST to Apps Script (for file uploads) ──────────
-  function postToAppsScript(payload) {
-    // Google Apps Script redirects POST requests. We follow the redirect
-    // chain using fetch with redirect:'follow'. Since we're on GitHub Pages
-    // (not Squarespace), this works without CSP issues.
-    fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      redirect: 'follow',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(payload)
-    })
-    .then(function(response) {
-      progFill.style.width = '90%';
-      return response.json().catch(function() {
-        // If we can't parse JSON (opaque response), assume success
-        return { success: true };
-      });
-    })
-    .then(function(result) {
-      progFill.style.width = '100%';
-      progText.textContent = 'Done!';
-      if (result && result.success !== false) {
-        form.style.display = 'none';
-        successEl.classList.add('active');
-        hideMsg();
-        successEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else {
-        showMsg((result && result.error) || 'Something went wrong. Please try again.', 'error');
-        resetBtn();
-      }
-    })
-    .catch(function(err) {
-      // fetch can fail on redirect with CORS — fall back to no-cors
-      fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(payload)
-      }).then(function() {
-        progFill.style.width = '100%';
-        progText.textContent = 'Done!';
-        form.style.display = 'none';
-        successEl.classList.add('active');
-        hideMsg();
-        successEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }).catch(function() {
-        showMsg('Submission failed. Please try again or email auditions@streetlamp.org directly.', 'error');
-        resetBtn();
-      });
-    });
-  }
-
-  // ── JSONP submit (for text-only, no file) ───────────
-  function submitViaJSONP(payload) {
-    window.slCallback = function(result) {
-      if (result && result.success) {
-        form.style.display = 'none';
-        successEl.classList.add('active');
-        hideMsg();
-        successEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else {
-        showMsg((result && result.error) || 'Something went wrong. Please try again.', 'error');
-        resetBtn();
-      }
-    };
-    var script = document.createElement('script');
-    script.src = APPS_SCRIPT_URL + '?callback=slCallback&payload=' + encodeURIComponent(JSON.stringify(payload));
-    script.onload = function() { try { document.head.removeChild(script); } catch(e) {} };
-    script.onerror = function() {
-      showMsg('Submission failed. Please try again or email auditions@streetlamp.org directly.', 'error');
-      resetBtn();
-      try { document.head.removeChild(script); } catch(e) {}
-    };
-    document.head.appendChild(script);
-  }
-
-  // ── Reset ───────────────────────────────────────────
-  resetLink.addEventListener('click', function() {
-    form.reset(); clearFile();
-    form.style.display = ''; successEl.classList.remove('active');
-    resetBtn(); hideMsg();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-
-  function readBase64(file) {
-    return new Promise(function(resolve, reject) {
-      var r = new FileReader();
-      r.onload = function() { resolve(r.result.split(',')[1]); };
-      r.onerror = reject;
-      r.readAsDataURL(file);
-    });
-  }
-
-  function resetBtn() {
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Submit Audition';
-    progressC.classList.remove('active');
-    progFill.style.width = '0%';
-  }
-
-  function showMsg(text, type) { globalMsg.textContent = text; globalMsg.className = 'message ' + type; }
-  function hideMsg() { globalMsg.className = 'message'; globalMsg.textContent = ''; }
+  function postToAppsScript(p){fetch(APPS_SCRIPT_URL,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain'},body:JSON.stringify(p)}).then(function(r){progFill.style.width='90%';return r.json().catch(function(){return{success:true}})}).then(function(r){progFill.style.width='100%';progText.textContent='Done!';if(r&&r.success!==false){onSuccess()}else{showMsg((r&&r.error)||'Something went wrong.','error');resetBtn()}}).catch(function(){fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(p)}).then(function(){progFill.style.width='100%';progText.textContent='Done!';onSuccess()}).catch(function(){showMsg('Submission failed. Please try again or email auditions@streetlamp.org.','error');resetBtn()})})}
+  function submitViaJSONP(p){window.slCallback=function(r){if(r&&r.success){onSuccess()}else{showMsg((r&&r.error)||'Something went wrong.','error');resetBtn()}};var s=document.createElement('script');s.src=APPS_SCRIPT_URL+'?callback=slCallback&payload='+encodeURIComponent(JSON.stringify(p));s.onload=function(){try{document.head.removeChild(s)}catch(e){}};s.onerror=function(){showMsg('Submission failed. Please try again or email auditions@streetlamp.org.','error');resetBtn();try{document.head.removeChild(s)}catch(e){}};document.head.appendChild(s)}
+  function onSuccess(){form.style.display='none';successEl.classList.add('active');hideMsg();successEl.scrollIntoView({behavior:'smooth',block:'start'})}
+  resetLink.addEventListener('click',function(){form.reset();clearFile();form.style.display='';successEl.classList.remove('active');resetBtn();hideMsg();window.scrollTo({top:0,behavior:'smooth'})});
+  function readBase64(f){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(r.result.split(',')[1])};r.onerror=rej;r.readAsDataURL(f)})}
+  function resetBtn(){submitBtn.disabled=false;submitBtn.textContent='Submit Audition';progressC.classList.remove('active');progFill.style.width='0%'}
+  function showMsg(t,c){globalMsg.textContent=t;globalMsg.className='message '+c}function hideMsg(){globalMsg.className='message';globalMsg.textContent=''}
 })();
 </script>
-
 </body>
 </html>

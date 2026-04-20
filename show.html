@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Auditions — Street Lamp</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Quasimoda', -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f5f5; color: #1a1a1a; line-height: 1.6; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 24px; }
+    h1 { font-family: 'Komet', Georgia, serif; font-size: 1.8rem; margin-bottom: 4px; }
+    .subtitle { color: #888; font-size: 0.9rem; margin-bottom: 32px; }
+
+    .card { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .card-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; }
+    .card-detail { font-size: 0.9rem; margin-bottom: 4px; }
+    .card-detail strong { color: #555; }
+    .card-video { margin-top: 12px; }
+    .card-video a { color: #333; text-decoration: underline; font-size: 0.9rem; margin-right: 16px; }
+
+    /* YouTube embed */
+    .video-embed { margin-top: 12px; border-radius: 6px; overflow: hidden; max-width: 480px; }
+    .video-embed iframe { width: 100%; aspect-ratio: 16/9; border: none; border-radius: 6px; }
+
+    .empty { text-align: center; padding: 60px 24px; color: #aaa; font-size: 0.95rem; }
+    .loading { text-align: center; padding: 60px; color: #aaa; }
+    .error { text-align: center; padding: 60px 24px; color: #c0392b; }
+    .count { font-size: 0.85rem; color: #888; margin-bottom: 20px; }
+
+    @media (max-width: 480px) { .container { padding: 24px 16px; } .card { padding: 18px; } }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div id="content"><div class="loading">Loading auditions...</div></div>
+</div>
+
+<script>
+var APPS_SCRIPT_URL = 'https://script.google.com/a/macros/streetlamp.org/s/AKfycbzdPHLpGNRG5ORBCneZH2TGmzM0Hi2xJnhDKkXM3sn0IbvzD18CWUDpZ_AuTPTvpie5/exec';
+
+var params = new URLSearchParams(window.location.search);
+var showName = params.get('show');
+
+if (!showName) {
+  document.getElementById('content').innerHTML = '<div class="error">No show specified. Add ?show=ShowName to the URL.</div>';
+} else {
+  document.title = showName + ' Auditions — Street Lamp';
+  loadShow(showName);
+}
+
+function loadShow(name) {
+  jsonp('slShow', { action: 'getShowSubmissions', showName: name }, function(r) {
+    if (!r || !r.success) {
+      document.getElementById('content').innerHTML = '<div class="error">' + ((r && r.error) || 'Failed to load.') + '</div>';
+      return;
+    }
+
+    var subs = r.submissions;
+    var html = '<h1>' + esc(r.showName) + '</h1>'
+      + '<div class="subtitle">Street Lamp Community Theatre — Audition Submissions</div>'
+      + '<div class="count">' + subs.length + ' audition' + (subs.length !== 1 ? 's' : '') + '</div>';
+
+    if (subs.length === 0) {
+      html += '<div class="empty">No auditions assigned to this show yet.</div>';
+    } else {
+      subs.forEach(function(s) {
+        var videoHtml = '';
+        if (s['YouTube URL']) {
+          var ytId = extractYouTubeId(s['YouTube URL']);
+          if (ytId) {
+            videoHtml += '<div class="video-embed"><iframe src="https://www.youtube.com/embed/' + ytId + '" allowfullscreen></iframe></div>';
+          } else {
+            videoHtml += '<a href="' + esc(s['YouTube URL']) + '" target="_blank">Watch YouTube Video</a>';
+          }
+        }
+        if (s['File URL']) {
+          videoHtml += '<a href="' + esc(s['File URL']) + '" target="_blank">Download Video File</a>';
+        }
+
+        html += '<div class="card">'
+          + '<div class="card-name">' + esc(s['Full Name']) + '</div>'
+          + '<div class="card-detail"><strong>Role:</strong> ' + esc(s['Role']) + '</div>'
+          + '<div class="card-detail"><strong>Location:</strong> ' + esc(s['Location']) + '</div>'
+          + (s['Age'] ? '<div class="card-detail"><strong>Age:</strong> ' + esc(s['Age']) + '</div>' : '')
+          + '<div class="card-detail"><strong>Email:</strong> ' + esc(s['Email']) + ' · <strong>Phone:</strong> ' + esc(s['Phone']) + '</div>'
+          + (s['Experience'] ? '<div class="card-detail"><strong>Experience:</strong> ' + esc(s['Experience']) + '</div>' : '')
+          + (s['Conflicts'] ? '<div class="card-detail"><strong>Conflicts:</strong> ' + esc(s['Conflicts']) + '</div>' : '')
+          + (s['Notes'] ? '<div class="card-detail"><strong>Notes:</strong> ' + esc(s['Notes']) + '</div>' : '')
+          + (videoHtml ? '<div class="card-video">' + videoHtml + '</div>' : '')
+          + '</div>';
+      });
+    }
+
+    document.getElementById('content').innerHTML = html;
+  });
+}
+
+function extractYouTubeId(url) {
+  var m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+
+function jsonp(cbName, data, onResult) {
+  window[cbName] = function(result) { onResult(result); };
+  var s = document.createElement('script');
+  s.src = APPS_SCRIPT_URL + '?callback=' + cbName + '&payload=' + encodeURIComponent(JSON.stringify(data));
+  s.onload = function() { try { document.head.removeChild(s); } catch(e) {} };
+  s.onerror = function() { onResult({ success: false, error: 'Request failed.' }); try { document.head.removeChild(s); } catch(e) {} };
+  document.head.appendChild(s);
+}
+
+function esc(str) { if (str == null) return ''; var d = document.createElement('div'); d.textContent = String(str); return d.innerHTML; }
+</script>
+</body>
+</html>
