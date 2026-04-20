@@ -224,6 +224,7 @@ function renderSubmissions() {
     shows.forEach(function(sh) {
       showOptions += '<option value="' + esc(sh.name) + '"' + (assignment === sh.name ? ' selected' : '') + '>' + esc(sh.name) + '</option>';
     });
+    showOptions += '<option value="__new__">+ Add new show...</option>';
 
     html += '<div class="card">'
       + '<div class="card-header"><div><div class="card-name">' + esc(s['Full Name']) + ' ' + badgeHtml + '</div>'
@@ -237,7 +238,7 @@ function renderSubmissions() {
       + (s['Notes'] ? '<div class="card-detail"><strong>Notes:</strong> ' + esc(s['Notes']) + '</div>' : '')
       + '<div class="card-video">' + videoHtml + '</div>'
       + '<div class="card-actions">'
-      + '<select onchange="assignSubmission(\'' + esc(s['ID']) + '\', this.value)">' + showOptions + '</select>'
+      + '<select onchange="handleAssignChange(\'' + esc(s['ID']) + '\', this)">' + showOptions + '</select>'
       + (assignment ? ' <button class="btn btn-sm btn-secondary" onclick="unassignSubmission(\'' + esc(s['ID']) + '\')">Unassign</button>' : '')
       + ' <button class="btn btn-sm btn-danger" onclick="deleteSubmission(\'' + esc(s['ID']) + '\')">Delete</button>'
       + '</div></div>';
@@ -282,6 +283,28 @@ function updateShowFilters() {
 }
 
 // ── ACTIONS ───────────────────────────────────────────
+function handleAssignChange(id, selectEl) {
+  var val = selectEl.value;
+  if (val === '__new__') {
+    var name = prompt('Enter new show name:');
+    if (!name || !name.trim()) {
+      selectEl.value = '';
+      return;
+    }
+    // Create the show, then assign this submission to it
+    jsonp('slCreateAssign', { action: 'createShow', password: password, showName: name.trim() }, function(r) {
+      if (r && r.success) {
+        assignSubmission(id, name.trim());
+      } else {
+        alert((r && r.error) || 'Failed to create show.');
+        selectEl.value = '';
+      }
+    });
+  } else if (val) {
+    assignSubmission(id, val);
+  }
+}
+
 function assignSubmission(id, showName) {
   if (!showName) return;
   jsonp('slAssign', { action: 'assignShow', password: password, submissionId: id, showName: showName }, function(r) {
