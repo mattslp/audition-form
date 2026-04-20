@@ -320,9 +320,10 @@ function deleteShowConfirm(name) {
 
 // ── JSONP ─────────────────────────────────────────────
 function jsonp(cbName, data, onResult) {
-  window[cbName] = function(result) { onResult(result); };
+  var uniqueCb = cbName + '_' + Date.now();
+  window[uniqueCb] = function(result) { onResult(result); delete window[uniqueCb]; };
   var s = document.createElement('script');
-  s.src = APPS_SCRIPT_URL + '?callback=' + cbName + '&payload=' + encodeURIComponent(JSON.stringify(data));
+  s.src = APPS_SCRIPT_URL + '?callback=' + uniqueCb + '&payload=' + encodeURIComponent(JSON.stringify(data)) + '&_=' + Date.now();
   s.onload = function() { try { document.head.removeChild(s); } catch(e) {} };
   s.onerror = function() { onResult({ success: false, error: 'Request failed.' }); try { document.head.removeChild(s); } catch(e) {} };
   document.head.appendChild(s);
