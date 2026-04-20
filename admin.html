@@ -230,7 +230,7 @@ function renderSubmissions() {
 
     html += '<div class="card">'
       + '<div class="card-header"><div><div class="card-name">' + esc(s['Full Name']) + ' ' + badgeHtml + '</div>'
-      + '<div class="card-meta">' + esc(s['Timestamp']) + ' · ' + esc(s['Location']) + '</div></div></div>'
+      + '<div class="card-meta">' + formatTimestamp(s['Timestamp']) + ' · ' + esc(s['Location']) + '</div></div></div>'
       + '<div class="card-detail"><strong>Show:</strong> ' + esc(s['Show']) + '</div>'
       + '<div class="card-detail"><strong>Role:</strong> ' + esc(s['Role']) + '</div>'
       + '<div class="card-detail"><strong>Email:</strong> ' + esc(s['Email']) + ' · <strong>Phone:</strong> ' + esc(s['Phone']) + '</div>'
@@ -355,6 +355,18 @@ function jsonp(cbName, data, onResult) {
 }
 
 function esc(str) { if (str == null) return ''; var d = document.createElement('div'); d.textContent = String(str); return d.innerHTML; }
+
+function formatTimestamp(ts) {
+  if (!ts) return '';
+  var d = new Date(ts);
+  if (isNaN(d)) return esc(ts);
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var h = d.getHours(), m = d.getMinutes();
+  var ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  var min = m < 10 ? '0' + m : m;
+  return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear() + ' at ' + h + ':' + min + ' ' + ampm;
+}
 </script>
 </body>
 </html>
