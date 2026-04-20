@@ -9,6 +9,7 @@
     body { font-family: 'Quasimoda', -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f5f5; color: #1a1a1a; line-height: 1.6; }
     .container { max-width: 800px; margin: 0 auto; padding: 40px 24px; }
     h1 { font-family: 'Komet', Georgia, serif; font-size: 1.8rem; margin-bottom: 4px; }
+    h2 { font-family: 'Komet', Georgia, serif; font-size: 1.2rem; margin-bottom: 12px; color: #1a1a1a; }
     .subtitle { color: #888; font-size: 0.9rem; margin-bottom: 32px; }
 
     .card { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
@@ -17,10 +18,19 @@
     .card-detail strong { color: #555; }
     .card-video { margin-top: 12px; }
     .card-video a { color: #333; text-decoration: underline; font-size: 0.9rem; margin-right: 16px; }
+    .card-actions { margin-top: 14px; padding-top: 12px; border-top: 1px solid #eee; }
 
-    /* YouTube embed */
+    .btn { padding: 8px 16px; font-family: inherit; font-size: 0.82rem; font-weight: 600; border: none; border-radius: 5px; cursor: pointer; transition: background 0.2s; }
+    .btn-viewed { background: #eee; color: #555; } .btn-viewed:hover { background: #ddd; }
+    .btn-unview { background: #fff; color: #888; border: 1px solid #ccc; } .btn-unview:hover { background: #f5f5f5; }
+
     .video-embed { margin-top: 12px; border-radius: 6px; overflow: hidden; max-width: 480px; }
     .video-embed iframe { width: 100%; aspect-ratio: 16/9; border: none; border-radius: 6px; }
+
+    .section-divider { margin: 36px 0 20px; padding-top: 24px; border-top: 2px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
+    .viewed-label { color: #888; font-size: 0.85rem; }
+
+    .card.viewed { opacity: 0.7; }
 
     .empty { text-align: center; padding: 60px 24px; color: #aaa; font-size: 0.95rem; }
     .loading { text-align: center; padding: 60px; color: #aaa; }
@@ -41,6 +51,7 @@ var APPS_SCRIPT_URL = 'https://script.google.com/a/macros/streetlamp.org/s/AKfyc
 
 var params = new URLSearchParams(window.location.search);
 var showName = params.get('show');
+var allSubs = [];
 
 if (!showName) {
   document.getElementById('content').innerHTML = '<div class="error">No show specified. Add ?show=ShowName to the URL.</div>';
@@ -49,51 +60,125 @@ if (!showName) {
   loadShow(showName);
 }
 
+// ── Viewed tracking via localStorage ──────────────────
+function getViewedKey() {
+  return 'sl_viewed_' + showName;
+}
+
+function getViewed() {
+  try {
+    var data = localStorage.getItem(getViewedKey());
+    return data ? JSON.parse(data) : {};
+  } catch(e) { return {}; }
+}
+
+function setViewed(name, viewed) {
+  var v = getViewed();
+  if (viewed) {
+    v[name] = true;
+  } else {
+    delete v[name];
+  }
+  try { localStorage.setItem(getViewedKey(), JSON.stringify(v)); } catch(e) {}
+}
+
+function isViewed(name) {
+  return !!getViewed()[name];
+}
+
+// ── Load & Render ─────────────────────────────────────
 function loadShow(name) {
-  jsonp('slShow', { action: 'getShowSubmissions', showName: name }, function(r) {
+  var cbName = 'slShow_' + Date.now();
+  jsonp(cbName, { action: 'getShowSubmissions', showName: name }, function(r) {
     if (!r || !r.success) {
       document.getElementById('content').innerHTML = '<div class="error">' + ((r && r.error) || 'Failed to load.') + '</div>';
       return;
     }
+    allSubs = r.submissions;
+    render(r.showName);
+  });
+}
 
-    var subs = r.submissions;
-    var html = '<h1>' + esc(r.showName) + '</h1>'
-      + '<div class="subtitle">Street Lamp Community Theatre — Audition Submissions</div>'
-      + '<div class="count">' + subs.length + ' audition' + (subs.length !== 1 ? 's' : '') + '</div>';
+function render(name) {
+  var unviewed = [];
+  var viewed = [];
 
-    if (subs.length === 0) {
-      html += '<div class="empty">No auditions assigned to this show yet.</div>';
+  allSubs.forEach(function(s) {
+    if (isViewed(s['Full Name'])) {
+      viewed.push(s);
     } else {
-      subs.forEach(function(s) {
-        var videoHtml = '';
-        if (s['YouTube URL']) {
-          var ytId = extractYouTubeId(s['YouTube URL']);
-          if (ytId) {
-            videoHtml += '<div class="video-embed"><iframe src="https://www.youtube.com/embed/' + ytId + '" allowfullscreen></iframe></div>';
-          } else {
-            videoHtml += '<a href="' + esc(s['YouTube URL']) + '" target="_blank">Watch YouTube Video</a>';
-          }
-        }
-        if (s['File URL']) {
-          videoHtml += '<a href="' + esc(s['File URL']) + '" target="_blank">View Video File</a>';
-        }
+      unviewed.push(s);
+    }
+  });
 
-        html += '<div class="card">'
-          + '<div class="card-name">' + esc(s['Full Name']) + '</div>'
-          + '<div class="card-detail"><strong>Role:</strong> ' + esc(s['Role']) + '</div>'
-          + '<div class="card-detail"><strong>Location:</strong> ' + esc(s['Location']) + '</div>'
-          + (s['Age'] ? '<div class="card-detail"><strong>Age:</strong> ' + esc(s['Age']) + '</div>' : '')
-          + '<div class="card-detail"><strong>Email:</strong> ' + esc(s['Email']) + ' · <strong>Phone:</strong> ' + esc(s['Phone']) + '</div>'
-          + (s['Experience'] ? '<div class="card-detail"><strong>Experience:</strong> ' + esc(s['Experience']) + '</div>' : '')
-          + (s['Conflicts'] ? '<div class="card-detail"><strong>Conflicts:</strong> ' + esc(s['Conflicts']) + '</div>' : '')
-          + (s['Notes'] ? '<div class="card-detail"><strong>Notes:</strong> ' + esc(s['Notes']) + '</div>' : '')
-          + (videoHtml ? '<div class="card-video">' + videoHtml + '</div>' : '')
-          + '</div>';
+  var html = '<h1>' + esc(name) + '</h1>'
+    + '<div class="subtitle">Street Lamp Community Theatre — Audition Submissions</div>'
+    + '<div class="count">' + allSubs.length + ' audition' + (allSubs.length !== 1 ? 's' : '')
+    + (unviewed.length < allSubs.length ? ' · ' + unviewed.length + ' new' : '')
+    + '</div>';
+
+  if (allSubs.length === 0) {
+    html += '<div class="empty">No auditions assigned to this show yet.</div>';
+  } else {
+    if (unviewed.length > 0) {
+      unviewed.forEach(function(s) {
+        html += buildCard(s, false);
       });
+    } else {
+      html += '<div style="text-align:center;color:#aaa;padding:24px 0;font-size:0.9rem;">All auditions have been viewed.</div>';
     }
 
-    document.getElementById('content').innerHTML = html;
-  });
+    if (viewed.length > 0) {
+      html += '<div class="section-divider"><h2>Viewed</h2><span class="viewed-label">' + viewed.length + ' audition' + (viewed.length !== 1 ? 's' : '') + '</span></div>';
+      viewed.forEach(function(s) {
+        html += buildCard(s, true);
+      });
+    }
+  }
+
+  document.getElementById('content').innerHTML = html;
+}
+
+function buildCard(s, isViewedCard) {
+  var videoHtml = '';
+  if (s['YouTube URL']) {
+    var ytId = extractYouTubeId(s['YouTube URL']);
+    if (ytId) {
+      videoHtml += '<div class="video-embed"><iframe src="https://www.youtube.com/embed/' + ytId + '" allowfullscreen></iframe></div>';
+    } else {
+      videoHtml += '<a href="' + esc(s['YouTube URL']) + '" target="_blank">Watch YouTube Video</a>';
+    }
+  }
+  if (s['File URL']) {
+    videoHtml += '<a href="' + esc(s['File URL']) + '" target="_blank">View Video File</a>';
+  }
+
+  var btnHtml = isViewedCard
+    ? '<button class="btn btn-unview" onclick="markUnviewed(\'' + escAttr(s['Full Name']) + '\')">Mark as unviewed</button>'
+    : '<button class="btn btn-viewed" onclick="markViewed(\'' + escAttr(s['Full Name']) + '\')">Mark as viewed</button>';
+
+  return '<div class="card' + (isViewedCard ? ' viewed' : '') + '">'
+    + '<div class="card-name">' + esc(s['Full Name']) + '</div>'
+    + '<div class="card-detail"><strong>Role:</strong> ' + esc(s['Role']) + '</div>'
+    + '<div class="card-detail"><strong>Location:</strong> ' + esc(s['Location']) + '</div>'
+    + (s['Age'] ? '<div class="card-detail"><strong>Age:</strong> ' + esc(s['Age']) + '</div>' : '')
+    + '<div class="card-detail"><strong>Email:</strong> ' + esc(s['Email']) + ' · <strong>Phone:</strong> ' + esc(s['Phone']) + '</div>'
+    + (s['Experience'] ? '<div class="card-detail"><strong>Experience:</strong> ' + esc(s['Experience']) + '</div>' : '')
+    + (s['Conflicts'] ? '<div class="card-detail"><strong>Conflicts:</strong> ' + esc(s['Conflicts']) + '</div>' : '')
+    + (s['Notes'] ? '<div class="card-detail"><strong>Notes:</strong> ' + esc(s['Notes']) + '</div>' : '')
+    + (videoHtml ? '<div class="card-video">' + videoHtml + '</div>' : '')
+    + '<div class="card-actions">' + btnHtml + '</div>'
+    + '</div>';
+}
+
+function markViewed(name) {
+  setViewed(name, true);
+  render(showName);
+}
+
+function markUnviewed(name) {
+  setViewed(name, false);
+  render(showName);
 }
 
 function extractYouTubeId(url) {
@@ -102,15 +187,16 @@ function extractYouTubeId(url) {
 }
 
 function jsonp(cbName, data, onResult) {
-  window[cbName] = function(result) { onResult(result); };
+  window[cbName] = function(result) { onResult(result); delete window[cbName]; };
   var s = document.createElement('script');
-  s.src = APPS_SCRIPT_URL + '?callback=' + cbName + '&payload=' + encodeURIComponent(JSON.stringify(data));
+  s.src = APPS_SCRIPT_URL + '?callback=' + cbName + '&payload=' + encodeURIComponent(JSON.stringify(data)) + '&_=' + Date.now();
   s.onload = function() { try { document.head.removeChild(s); } catch(e) {} };
   s.onerror = function() { onResult({ success: false, error: 'Request failed.' }); try { document.head.removeChild(s); } catch(e) {} };
   document.head.appendChild(s);
 }
 
 function esc(str) { if (str == null) return ''; var d = document.createElement('div'); d.textContent = String(str); return d.innerHTML; }
+function escAttr(str) { return esc(str).replace(/'/g, "\\'"); }
 </script>
 </body>
 </html>
