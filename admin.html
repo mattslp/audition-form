@@ -79,7 +79,7 @@
 <div id="loginView" class="login-box">
   <h1>Audition Admin</h1>
   <div id="loginErr" class="err"></div>
-  <input type="password" id="loginPw" placeholder="Enter admin password" autofocus>
+  <input type="password" id="loginPw" placeholder="Enter admin password" autofocus onkeydown="if(event.key==='Enter')doLogin()">
   <button class="btn btn-primary" style="width:100%;" onclick="doLogin()">Log In</button>
 </div>
 

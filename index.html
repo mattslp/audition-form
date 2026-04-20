@@ -72,8 +72,8 @@
       <div class="field"><label for="sl_location">Location <span class="req">*</span></label><select id="sl_location" required><option value="" disabled selected>Select a location</option><option value="Rising Sun">Rising Sun</option><option value="Kennett Square">Kennett Square</option></select><div class="err-msg">Please select a location.</div></div>
       <div class="field"><label for="sl_show">Show / Production <span class="req">*</span></label><input type="text" id="sl_show" placeholder="e.g. Annie, Seussical, Matilda Jr." required><div class="err-msg">Please enter the show name.</div></div>
       <div class="field"><label for="sl_role">Desired Role(s) <span class="req">*</span></label><input type="text" id="sl_role" placeholder="e.g. Annie, Cat in the Hat, Any role" required><div class="err-msg">Please enter at least one role.</div></div>
-      <div class="field"><label for="sl_experience">Previous Experience <span class="opt">(optional)</span></label><textarea id="sl_experience" rows="3" placeholder="List any relevant theatre, singing, or dance experience..."></textarea></div>
-      <div class="field"><label for="sl_conflicts">Schedule Conflicts <span class="opt">(optional)</span></label><textarea id="sl_conflicts" rows="2" placeholder="List any dates you are unavailable for rehearsals or performances..."></textarea></div>
+      <div class="field"><label for="sl_experience">Previous Experience <span class="req">*</span></label><textarea id="sl_experience" rows="3" placeholder="List any relevant theatre, singing, or dance experience..."></textarea><div class="err-msg">Please describe your experience.</div></div>
+      <div class="field"><label for="sl_conflicts">Schedule Conflicts <span class="req">*</span></label><textarea id="sl_conflicts" rows="2" placeholder="List any dates you are unavailable for rehearsals or performances..."></textarea><div class="err-msg">Please list any conflicts, or write "None".</div></div>
     </div>
     <div class="form-section"><div class="section-title">Audition Video</div>
       <p style="font-size:0.875rem;color:#888;margin-bottom:16px;">Please upload a video file or paste a YouTube link (at least one is required).</p>
@@ -101,7 +101,7 @@
   function handleFile(f){if(f.size>MAX_SIZE){showMsg('File is too large. Maximum size is 50 MB.','error');return}selectedFile=f;fileNameEl.textContent=f.name;fileSizeEl.textContent=formatBytes(f.size);filePrev.classList.add('active');uploadArea.style.display='none';hideMsg()}
   function clearFile(){selectedFile=null;fileInput.value='';filePrev.classList.remove('active');uploadArea.style.display=''}
   function formatBytes(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(1)+' MB'}
-  var reqIds=['sl_fullName','sl_email','sl_phone','sl_location','sl_show','sl_role'];
+  var reqIds=['sl_fullName','sl_email','sl_phone','sl_location','sl_show','sl_role','sl_experience','sl_conflicts'];
   function validate(){var ok=true;reqIds.forEach(function(id){var el=document.getElementById(id),w=el.closest('.field');if(!el.value.trim()){w.classList.add('field-error');ok=false}else{w.classList.remove('field-error')}});var em=document.getElementById('sl_email');if(em.value.trim()&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value.trim())){em.closest('.field').classList.add('field-error');ok=false}return ok}
   document.querySelectorAll('input,textarea,select').forEach(function(el){el.addEventListener('input',function(){var f=el.closest('.field');if(f)f.classList.remove('field-error')})});
   form.addEventListener('submit',function(e){e.preventDefault();hideMsg();if(!validate()){showMsg('Please fill in all required fields.','error');var f=document.querySelector('.field-error');if(f)f.scrollIntoView({behavior:'smooth',block:'center'});return}
