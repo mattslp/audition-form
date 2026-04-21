@@ -114,7 +114,7 @@
   <div id="tab-shows" class="tab-content">
     <div class="new-show-row">
       <input type="text" id="newShowName" placeholder="New show name (e.g. Annie)">
-      <button class="btn btn-primary" onclick="createShow()">Create Show</button>
+      <button id="createShowBtn" class="btn btn-primary" onclick="createShow()">Create Show</button>
     </div>
     <div id="showList"><div class="loading">Loading shows...</div></div>
   </div>
@@ -329,10 +329,19 @@ function deleteSubmission(id) {
 }
 
 function createShow() {
-  var name = document.getElementById('newShowName').value.trim();
+  var input = document.getElementById('newShowName');
+  var btn = document.getElementById('createShowBtn');
+  var name = input.value.trim();
   if (!name) return;
+
+  input.value = '';
+  btn.disabled = true;
+  btn.textContent = 'Creating Show...';
+
   jsonp('slCreate', { action: 'createShow', password: password, showName: name }, function(r) {
-    if (r && r.success) { document.getElementById('newShowName').value = ''; loadAll(); }
+    btn.disabled = false;
+    btn.textContent = 'Create Show';
+    if (r && r.success) { loadAll(); }
     else { alert((r && r.error) || 'Failed to create show.'); }
   });
 }
