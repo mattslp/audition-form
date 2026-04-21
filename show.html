@@ -112,7 +112,6 @@ function render(name) {
   });
 
   var html = '<h1>' + esc(name) + '</h1>'
-    + '<div class="subtitle">Street Lamp Community Theatre — Audition Submissions</div>'
     + '<div class="count">' + allSubs.length + ' audition' + (allSubs.length !== 1 ? 's' : '')
     + (unviewed.length < allSubs.length ? ' · ' + unviewed.length + ' new' : '')
     + '</div>';
