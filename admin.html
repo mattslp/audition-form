@@ -80,7 +80,7 @@
   <h1>Audition Admin</h1>
   <div id="loginErr" class="err"></div>
   <input type="password" id="loginPw" placeholder="Enter admin password" autofocus onkeydown="if(event.key==='Enter')doLogin()">
-  <button class="btn btn-primary" style="width:100%;" onclick="doLogin()">Log In</button>
+  <button id="loginBtn" class="btn btn-primary" style="width:100%;" onclick="doLogin()">Log In</button>
 </div>
 
 <!-- DASHBOARD -->
@@ -131,13 +131,18 @@ var BASE_URL = window.location.href.replace(/\/[^/]*$/, '/');
 document.getElementById('loginPw').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
 
 function doLogin() {
+  var btn = document.getElementById('loginBtn');
   password = document.getElementById('loginPw').value;
+  btn.disabled = true;
+  btn.textContent = 'Logging in...';
   jsonp('slLogin', { action: 'adminLogin', password: password }, function(r) {
     if (r && r.success) {
       document.getElementById('loginView').style.display = 'none';
       document.getElementById('dashView').style.display = 'block';
       loadAll();
     } else {
+      btn.disabled = false;
+      btn.textContent = 'Log In';
       document.getElementById('loginErr').textContent = (r && r.error) || 'Incorrect password.';
       document.getElementById('loginErr').style.display = 'block';
     }
