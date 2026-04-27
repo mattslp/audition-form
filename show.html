@@ -128,7 +128,7 @@ function render(name) {
     + '<option value="in-person"' + (typeFilter === 'in-person' ? ' selected' : '') + '>In-Person</option>'
     + '<option value="virtual"' + (typeFilter === 'virtual' ? ' selected' : '') + '>Virtual</option>'
     + '</select>'
-    + '<button onclick="downloadCSV(\'' + escAttr(name) + '\')" style="padding:6px 14px;font-size:0.82rem;font-weight:600;border:1px solid #ccc;border-radius:4px;background:#fff;cursor:pointer;font-family:inherit;">Download Auditionee List</button>'
+    + '<button onclick="downloadCSV()" style="padding:6px 14px;font-size:0.82rem;font-weight:600;border:1px solid #ccc;border-radius:4px;background:#fff;cursor:pointer;font-family:inherit;">Download Auditionee List</button>'
     + '</div>';
 
   document.getElementById('header').innerHTML = headerHtml;
@@ -219,7 +219,7 @@ function jsonp(cbName, data, onResult) {
 function esc(str) { if (str == null) return ''; var d = document.createElement('div'); d.textContent = String(str); return d.innerHTML; }
 function escAttr(str) { return esc(str).replace(/'/g, "\\'"); }
 
-function downloadCSV(showName) {
+function downloadCSV() {
   var csvRows = [['Name', 'Email', 'Phone', 'Desired Role(s)']];
   allSubs.forEach(function(s) {
     csvRows.push([
@@ -234,9 +234,10 @@ function downloadCSV(showName) {
   var a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = fileName;
+  a.style.display = 'none';
   document.body.appendChild(a);
   a.click();
-  document.body.removeChild(a);
+  setTimeout(function() { document.body.removeChild(a); }, 100);
 }
 </script>
 </body>
