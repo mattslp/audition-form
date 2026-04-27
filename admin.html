@@ -105,6 +105,11 @@
         <option value="unassigned">Unassigned</option>
         <option value="assigned">Assigned</option>
       </select>
+      <select id="filterType" onchange="renderSubmissions()">
+        <option value="">All Types</option>
+        <option value="in-person">In-Person</option>
+        <option value="virtual">Virtual</option>
+      </select>
     </div>
     <div class="count" id="subCount"></div>
     <div id="subList"><div class="loading">Loading submissions...</div></div>
@@ -200,12 +205,14 @@ function renderSubmissions() {
   var search = document.getElementById('filterSearch').value.toLowerCase();
   var showFilter = document.getElementById('filterShow').value;
   var assignFilter = document.getElementById('filterAssignment').value;
+  var typeFilter = document.getElementById('filterType').value;
 
   var filtered = submissions.filter(function(s) {
     if (search && !(s['Full Name'] + ' ' + s['Show'] + ' ' + s['Role']).toLowerCase().includes(search)) return false;
     if (showFilter && s['Show'] !== showFilter) return false;
     if (assignFilter === 'unassigned' && s['Show Assignment']) return false;
     if (assignFilter === 'assigned' && !s['Show Assignment']) return false;
+    if (typeFilter && (s['Audition Type'] || 'virtual') !== typeFilter) return false;
     return true;
   });
 
@@ -222,6 +229,10 @@ function renderSubmissions() {
     var badgeHtml = assignment
       ? '<span class="badge badge-assigned">' + esc(assignment) + '</span>'
       : '<span class="badge">Unassigned</span>';
+    var aType = s['Audition Type'] || 'virtual';
+    var typeBadge = aType === 'in-person'
+      ? ' <span class="badge" style="background:#e8e8e8;">In-Person</span>'
+      : ' <span class="badge" style="background:#e8e8e8;">Virtual</span>';
 
     var videoHtml = '';
     if (s['YouTube URL']) videoHtml += '<a href="' + esc(s['YouTube URL']) + '" target="_blank">YouTube Video</a> ';
@@ -235,7 +246,7 @@ function renderSubmissions() {
     showOptions += '<option value="__new__">+ Add new show...</option>';
 
     html += '<div class="card">'
-      + '<div class="card-header"><div><div class="card-name">' + esc(s['Full Name']) + ' ' + badgeHtml + '</div>'
+      + '<div class="card-header"><div><div class="card-name">' + esc(s['Full Name']) + ' ' + badgeHtml + typeBadge + '</div>'
       + '<div class="card-meta">' + formatTimestamp(s['Timestamp']) + ' · ' + esc(s['Location']) + '</div></div></div>'
       + '<div class="card-detail"><strong>Show:</strong> ' + esc(s['Show']) + '</div>'
       + '<div class="card-detail"><strong>Role:</strong> ' + esc(s['Role']) + '</div>'
