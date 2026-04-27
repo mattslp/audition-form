@@ -102,10 +102,16 @@ function loadShow(name) {
 }
 
 function render(name) {
+  var typeFilter = document.getElementById('showTypeFilter') ? document.getElementById('showTypeFilter').value : '';
+  var filteredSubs = allSubs.filter(function(s) {
+    if (typeFilter && (s['Audition Type'] || 'virtual') !== typeFilter) return false;
+    return true;
+  });
+
   var unviewed = [];
   var viewed = [];
 
-  allSubs.forEach(function(s) {
+  filteredSubs.forEach(function(s) {
     if (isViewed(s['Full Name'])) {
       viewed.push(s);
     } else {
@@ -114,16 +120,23 @@ function render(name) {
   });
 
   var headerHtml = '<h1>' + esc(name) + '</h1>'
-    + '<div class="count">' + allSubs.length + ' audition' + (allSubs.length !== 1 ? 's' : '')
-    + (unviewed.length < allSubs.length ? ' · ' + unviewed.length + ' new' : '')
+    + '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px;">'
+    + '<span class="count" style="margin:0;">' + filteredSubs.length + ' audition' + (filteredSubs.length !== 1 ? 's' : '')
+    + (unviewed.length < filteredSubs.length ? ' · ' + unviewed.length + ' new' : '') + '</span>'
+    + '<select id="showTypeFilter" onchange="render(\'' + escAttr(name) + '\')" style="padding:6px 10px;font-size:0.82rem;border:1px solid #ccc;border-radius:4px;font-family:inherit;">'
+    + '<option value=""' + (!typeFilter ? ' selected' : '') + '>All Types</option>'
+    + '<option value="in-person"' + (typeFilter === 'in-person' ? ' selected' : '') + '>In-Person</option>'
+    + '<option value="virtual"' + (typeFilter === 'virtual' ? ' selected' : '') + '>Virtual</option>'
+    + '</select>'
+    + '<button onclick="downloadCSV(\'' + escAttr(name) + '\')" style="padding:6px 14px;font-size:0.82rem;font-weight:600;border:1px solid #ccc;border-radius:4px;background:#fff;cursor:pointer;font-family:inherit;">Download Auditionee List</button>'
     + '</div>';
 
   document.getElementById('header').innerHTML = headerHtml;
 
   var html = '';
 
-  if (allSubs.length === 0) {
-    html += '<div class="empty">No auditions assigned to this show yet.</div>';
+  if (filteredSubs.length === 0) {
+    html += '<div class="empty">No auditions found.</div>';
   } else {
     if (unviewed.length > 0) {
       unviewed.forEach(function(s) {
@@ -162,8 +175,11 @@ function buildCard(s, isViewedCard) {
     ? '<button class="btn btn-unview" onclick="markUnviewed(\'' + escAttr(s['Full Name']) + '\')">Mark as unviewed</button>'
     : '<button class="btn btn-viewed" onclick="markViewed(\'' + escAttr(s['Full Name']) + '\')">Mark as viewed</button>';
 
+  var aType = s['Audition Type'] || 'virtual';
+  var typeBadge = aType === 'in-person' ? 'In-Person' : 'Virtual';
+
   return '<div class="card' + (isViewedCard ? ' viewed' : '') + '">'
-    + '<div class="card-name">' + esc(s['Full Name']) + '</div>'
+    + '<div class="card-name">' + esc(s['Full Name']) + ' <span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:0.75rem;font-weight:600;background:#eee;color:#555;">' + typeBadge + '</span></div>'
     + '<div class="card-detail"><strong>Role:</strong> ' + esc(s['Role']) + '</div>'
     + '<div class="card-detail"><strong>Location:</strong> ' + esc(s['Location']) + '</div>'
     + (s['Age'] ? '<div class="card-detail"><strong>Age:</strong> ' + esc(s['Age']) + '</div>' : '')
@@ -202,6 +218,28 @@ function jsonp(cbName, data, onResult) {
 
 function esc(str) { if (str == null) return ''; var d = document.createElement('div'); d.textContent = String(str); return d.innerHTML; }
 function escAttr(str) { return esc(str).replace(/'/g, "\\'"); }
+
+function downloadCSV(showName) {
+  var csvRows = [['Name', 'Email', 'Phone', 'Desired Role(s)']];
+  allSubs.forEach(function(s) {
+    csvRows.push([
+      '"' + (s['Full Name'] || '').replace(/"/g, '""') + '"',
+      '"' + (s['Email'] || '').replace(/"/g, '""') + '"',
+      '"' + (s['Phone'] || '').replace(/"/g, '""') + '"',
+      '"' + (s['Role'] || '').replace(/"/g, '""') + '"'
+    ]);
+  });
+  var csv = csvRows.map(function(r) { return r.join(','); }).join('\n');
+  var blob = new Blob([csv], { type: 'text/csv' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = showName.replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, '_') + '_Auditionees.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 </script>
 </body>
 </html>
