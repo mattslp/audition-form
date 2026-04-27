@@ -230,21 +230,13 @@ function downloadCSV(showName) {
     ]);
   });
   var csv = csvRows.map(function(r) { return r.join(','); }).join('\n');
-  var blob = new Blob([csv], { type: 'text/csv' });
-  var url = URL.createObjectURL(blob);
-  // Open in new tab — works even inside iframes
-  var w = window.open(url, '_blank');
-  if (!w) {
-    // Popup blocked — fall back to direct link
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = showName.replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, '_') + '_Auditionees.csv';
-    a.target = '_top';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  }
-  setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
+  var fileName = showName.replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, '_') + '_Auditionees.csv';
+  var a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }
 </script>
 </body>
