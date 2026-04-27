@@ -55,69 +55,232 @@
     .success-state h2 { font-family: 'Komet', Georgia, serif; font-size: 1.5rem; font-weight: 600; margin-bottom: 8px; }
     .success-state p { color: #888; font-size: 0.95rem; }
     .reset-link { display: inline-block; margin-top: 24px; color: #333; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 0.9rem; } .reset-link:hover { color: #1a1a1a; }
+
+    /* Type selector */
+    .type-selector { text-align: center; padding: 60px 24px; }
+    .type-selector h1 { font-family: 'Komet', Georgia, serif; font-size: 2rem; font-weight: 700; margin-bottom: 10px; }
+    .type-selector p { color: #666; font-size: 0.95rem; margin-bottom: 36px; }
+    .type-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .type-btn { padding: 20px 32px; font-family: inherit; font-size: 1rem; font-weight: 600; border: 2px solid #ddd; border-radius: 8px; background: #fff; color: #1a1a1a; cursor: pointer; transition: border-color 0.2s, background 0.2s, transform 0.1s; min-width: 200px; }
+    .type-btn:hover { border-color: #1a1a1a; background: #f7f7f7; }
+    .type-btn:active { transform: scale(0.98); }
+    .type-btn .type-icon { font-size: 1.5rem; margin-bottom: 8px; display: block; }
+    .type-btn .type-desc { font-size: 0.82rem; font-weight: 400; color: #888; margin-top: 4px; display: block; }
+    @media (max-width: 480px) { .type-buttons { flex-direction: column; align-items: center; } .type-btn { width: 100%; max-width: 280px; } }
   </style>
 </head>
 <body>
+
 <div class="container">
-  <div class="form-header"><h1>Audition Submission</h1><p>Upload your audition materials for Street Lamp</p></div>
-  <div id="slMsg" class="message"></div>
-  <form id="slForm" novalidate>
-    <div class="form-section"><div class="section-title">Personal Information</div>
-      <div class="field"><label for="sl_fullName">Full Name <span class="req">*</span></label><input type="text" id="sl_fullName" placeholder="First and Last Name" required><div class="err-msg">Please enter your name.</div></div>
-      <div class="row"><div class="field"><label for="sl_email">Email <span class="req">*</span></label><input type="email" id="sl_email" placeholder="you@example.com" required><div class="err-msg">Please enter a valid email.</div></div>
-      <div class="field"><label for="sl_phone">Phone <span class="req">*</span></label><input type="tel" id="sl_phone" placeholder="(555) 555-5555" required><div class="err-msg">Please enter your phone number.</div></div></div>
-      <div class="field"><label for="sl_age">Age <span class="opt">(optional)</span></label><input type="number" id="sl_age" min="4" max="120" placeholder="e.g. 15"></div>
+
+  <!-- TYPE SELECTOR -->
+  <div id="typeSelector" class="type-selector">
+    <h1>Audition Submission</h1>
+    <p>Upload your audition materials for Street Lamp</p>
+    <div class="type-buttons">
+      <button class="type-btn" onclick="selectType('in-person')">
+        <span class="type-icon">🎭</span>
+        In-Person
+        <span class="type-desc">Auditioning at a scheduled session</span>
+      </button>
+      <button class="type-btn" onclick="selectType('virtual')">
+        <span class="type-icon">🎥</span>
+        Virtual / Video
+        <span class="type-desc">Submitting a recorded audition</span>
+      </button>
     </div>
-    <div class="form-section"><div class="section-title">Audition Details</div>
-      <div class="field"><label for="sl_location">Location <span class="req">*</span></label><select id="sl_location" required><option value="" disabled selected>Select a location</option><option value="Rising Sun">Rising Sun</option><option value="Kennett Square">Kennett Square</option></select><div class="err-msg">Please select a location.</div></div>
-      <div class="field"><label for="sl_show">Show / Production <span class="req">*</span></label><input type="text" id="sl_show" placeholder="e.g. Annie, Seussical, Matilda Jr." required><div class="err-msg">Please enter the show name.</div></div>
-      <div class="field"><label for="sl_role">Desired Role(s) <span class="req">*</span></label><input type="text" id="sl_role" placeholder="e.g. Annie, Cat in the Hat, Any role" required><div class="err-msg">Please enter at least one role.</div></div>
-      <div class="field"><label for="sl_experience">Previous Experience <span class="req">*</span></label><textarea id="sl_experience" rows="3" placeholder="List any relevant theatre, singing, or dance experience..."></textarea><div class="err-msg">Please describe your experience.</div></div>
-      <div class="field"><label for="sl_conflicts">Schedule Conflicts <span class="req">*</span></label><textarea id="sl_conflicts" rows="2" placeholder="List any dates you are unavailable for rehearsals or performances..."></textarea><div class="err-msg">Please list any conflicts, or write "None".</div></div>
-    </div>
-    <div class="form-section"><div class="section-title">Audition Video</div>
-      <p style="font-size:0.875rem;color:#888;margin-bottom:16px;">Please upload a video file or paste a YouTube link (at least one is required).</p>
-      <div class="field"><label>Upload Video File <span class="opt">(optional)</span></label>
-        <div class="upload-area" id="slUploadArea"><input type="file" id="slFileInput" accept="video/*"><svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><div class="upload-label">Drag &amp; drop or <span>browse</span></div><div class="upload-hint">Video files up to 50 MB</div></div>
-        <div class="file-preview" id="slFilePreview"><div class="file-info"><div class="file-name" id="slFileName"></div><div class="file-size" id="slFileSize"></div></div><button type="button" class="file-remove" id="slFileRemove" title="Remove file">&times;</button></div>
-        <div class="progress-container" id="slProgress"><div class="progress-bar-bg"><div class="progress-fill" id="slProgressFill"></div></div><div class="progress-text" id="slProgressText">Preparing upload...</div></div>
+  </div>
+
+  <!-- FORM (hidden until type selected) -->
+  <div id="formWrapper" style="display:none;">
+    <div class="form-header"><h1>Audition Submission</h1><p id="formSubtitle">Upload your audition materials for Street Lamp</p></div>
+    <div id="slMsg" class="message"></div>
+    <form id="slForm" novalidate>
+      <div class="form-section"><div class="section-title">Personal Information</div>
+        <div class="field"><label for="sl_fullName">Full Name <span class="req">*</span></label><input type="text" id="sl_fullName" placeholder="First and Last Name" required><div class="err-msg">Please enter your name.</div></div>
+        <div class="row"><div class="field"><label for="sl_email">Email <span class="req">*</span></label><input type="email" id="sl_email" placeholder="you@example.com" required><div class="err-msg">Please enter a valid email.</div></div>
+        <div class="field"><label for="sl_phone">Phone <span class="req">*</span></label><input type="tel" id="sl_phone" placeholder="(555) 555-5555" required><div class="err-msg">Please enter your phone number.</div></div></div>
+        <div class="field"><label for="sl_age">Age <span class="opt">(optional)</span></label><input type="number" id="sl_age" min="4" max="120" placeholder="e.g. 15"></div>
       </div>
-      <div class="field"><label for="sl_youtubeUrl">YouTube Link <span class="opt">(optional)</span></label><input type="text" id="sl_youtubeUrl" placeholder="https://www.youtube.com/watch?v=..."><div class="err-msg">Please enter a valid YouTube URL.</div></div>
-      <div class="field"><label for="sl_notes">Additional Notes <span class="opt">(optional)</span></label><textarea id="sl_notes" rows="2" placeholder="Anything else you'd like us to know..."></textarea></div>
-    </div>
-    <div class="form-section" style="padding-bottom:28px;">
-      <div class="field" style="display:flex;align-items:center;gap:10px;margin-bottom:18px;"><input type="checkbox" id="sl_sendCopy" style="width:auto;accent-color:#333;cursor:pointer;"><label for="sl_sendCopy" style="margin:0;font-weight:400;font-size:0.9rem;cursor:pointer;">Send me a copy of this submission</label></div>
-      <button type="submit" class="submit-btn" id="slSubmitBtn">Submit Audition</button>
-    </div>
-  </form>
-  <div class="success-state" id="slSuccess"><div class="success-check"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><h2>Submission Received!</h2><p>Thank you for your audition submission. We'll review your materials and be in touch soon.</p><a class="reset-link" id="slResetLink">Submit another audition</a></div>
+      <div class="form-section"><div class="section-title">Audition Details</div>
+        <div class="field"><label for="sl_location">Location <span class="req">*</span></label><select id="sl_location" required><option value="" disabled selected>Select a location</option><option value="Rising Sun">Rising Sun</option><option value="Kennett Square">Kennett Square</option></select><div class="err-msg">Please select a location.</div></div>
+        <div class="field"><label for="sl_show">Show / Production <span class="req">*</span></label><input type="text" id="sl_show" placeholder="e.g. Annie, Seussical, Matilda Jr." required><div class="err-msg">Please enter the show name.</div></div>
+        <div class="field"><label for="sl_role">Desired Role(s) <span class="req">*</span></label><input type="text" id="sl_role" placeholder="e.g. Annie, Cat in the Hat, Any role" required><div class="err-msg">Please enter at least one role.</div></div>
+        <div class="field"><label for="sl_experience">Previous Experience <span class="req">*</span></label><textarea id="sl_experience" rows="3" placeholder="List any relevant theatre, singing, or dance experience..."></textarea><div class="err-msg">Please describe your experience.</div></div>
+        <div class="field"><label for="sl_conflicts">Schedule Conflicts <span class="req">*</span></label><textarea id="sl_conflicts" rows="2" placeholder="List any dates you are unavailable for rehearsals or performances..."></textarea><div class="err-msg">Please list any conflicts, or write "None".</div></div>
+      </div>
+
+      <!-- VIDEO SECTION (hidden for in-person) -->
+      <div class="form-section" id="videoSection"><div class="section-title">Audition Video</div>
+        <p style="font-size:0.875rem;color:#888;margin-bottom:16px;">Please upload a video file or paste a YouTube link (at least one is required).</p>
+        <div class="field"><label>Upload Video File <span class="opt">(optional)</span></label>
+          <div class="upload-area" id="slUploadArea"><input type="file" id="slFileInput" accept="video/*"><svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><div class="upload-label">Drag &amp; drop or <span>browse</span></div><div class="upload-hint">Video files up to 50 MB</div></div>
+          <div class="file-preview" id="slFilePreview"><div class="file-info"><div class="file-name" id="slFileName"></div><div class="file-size" id="slFileSize"></div></div><button type="button" class="file-remove" id="slFileRemove" title="Remove file">&times;</button></div>
+          <div class="progress-container" id="slProgress"><div class="progress-bar-bg"><div class="progress-fill" id="slProgressFill"></div></div><div class="progress-text" id="slProgressText">Preparing upload...</div></div>
+        </div>
+        <div class="field"><label for="sl_youtubeUrl">YouTube Link <span class="opt">(optional)</span></label><input type="text" id="sl_youtubeUrl" placeholder="https://www.youtube.com/watch?v=..."><div class="err-msg">Please enter a valid YouTube URL.</div></div>
+        <div class="field"><label for="sl_notes">Additional Notes <span class="opt">(optional)</span></label><textarea id="sl_notes" rows="2" placeholder="Anything else you'd like us to know..."></textarea></div>
+      </div>
+
+      <!-- NOTES SECTION (shown for in-person, hidden for virtual) -->
+      <div class="form-section" id="notesSection" style="display:none;">
+        <div class="section-title">Additional Information</div>
+        <div class="field"><label for="sl_notes_ip">Additional Notes <span class="opt">(optional)</span></label><textarea id="sl_notes_ip" rows="2" placeholder="Anything else you'd like us to know..."></textarea></div>
+      </div>
+
+      <div class="form-section" style="padding-bottom:28px;">
+        <div class="field" style="display:flex;align-items:center;gap:10px;margin-bottom:18px;"><input type="checkbox" id="sl_sendCopy" style="width:auto;accent-color:#333;cursor:pointer;"><label for="sl_sendCopy" style="margin:0;font-weight:400;font-size:0.9rem;cursor:pointer;">Send me a copy of this submission</label></div>
+        <button type="submit" class="submit-btn" id="slSubmitBtn">Submit Audition</button>
+      </div>
+    </form>
+    <div class="success-state" id="slSuccess"><div class="success-check"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><h2>Submission Received!</h2><p>Thank you for your audition submission. We'll review your materials and be in touch soon.</p><a class="reset-link" id="slResetLink">Submit another audition</a></div>
+  </div>
+
 </div>
+
 <script>
 (function() {
   var APPS_SCRIPT_URL = 'https://script.google.com/a/macros/streetlamp.org/s/AKfycbzdPHLpGNRG5ORBCneZH2TGmzM0Hi2xJnhDKkXM3sn0IbvzD18CWUDpZ_AuTPTvpie5/exec';
   var selectedFile = null, MAX_SIZE = 50 * 1024 * 1024;
+  var auditionType = '';
+
+  // ── Type selection ──────────────────────────────────
+  window.selectType = function(type) {
+    auditionType = type;
+    document.getElementById('typeSelector').style.display = 'none';
+    document.getElementById('formWrapper').style.display = 'block';
+
+    if (type === 'in-person') {
+      document.getElementById('videoSection').style.display = 'none';
+      document.getElementById('notesSection').style.display = '';
+    } else {
+      document.getElementById('videoSection').style.display = '';
+      document.getElementById('notesSection').style.display = 'none';
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // ── DOM refs ────────────────────────────────────────
   var form=document.getElementById('slForm'),submitBtn=document.getElementById('slSubmitBtn'),globalMsg=document.getElementById('slMsg'),uploadArea=document.getElementById('slUploadArea'),fileInput=document.getElementById('slFileInput'),filePrev=document.getElementById('slFilePreview'),fileNameEl=document.getElementById('slFileName'),fileSizeEl=document.getElementById('slFileSize'),fileRemove=document.getElementById('slFileRemove'),progressC=document.getElementById('slProgress'),progFill=document.getElementById('slProgressFill'),progText=document.getElementById('slProgressText'),successEl=document.getElementById('slSuccess'),resetLink=document.getElementById('slResetLink');
-  uploadArea.addEventListener('click',function(){fileInput.click()});uploadArea.addEventListener('dragover',function(e){e.preventDefault();uploadArea.classList.add('dragover')});uploadArea.addEventListener('dragleave',function(){uploadArea.classList.remove('dragover')});uploadArea.addEventListener('drop',function(e){e.preventDefault();uploadArea.classList.remove('dragover');if(e.dataTransfer.files.length)handleFile(e.dataTransfer.files[0])});fileInput.addEventListener('change',function(){if(fileInput.files.length)handleFile(fileInput.files[0])});fileRemove.addEventListener('click',clearFile);
+
+  // ── File handling ───────────────────────────────────
+  uploadArea.addEventListener('click',function(){fileInput.click()});
+  uploadArea.addEventListener('dragover',function(e){e.preventDefault();uploadArea.classList.add('dragover')});
+  uploadArea.addEventListener('dragleave',function(){uploadArea.classList.remove('dragover')});
+  uploadArea.addEventListener('drop',function(e){e.preventDefault();uploadArea.classList.remove('dragover');if(e.dataTransfer.files.length)handleFile(e.dataTransfer.files[0])});
+  fileInput.addEventListener('change',function(){if(fileInput.files.length)handleFile(fileInput.files[0])});
+  fileRemove.addEventListener('click',clearFile);
+
   function handleFile(f){if(f.size>MAX_SIZE){showMsg('File is too large. Maximum size is 50 MB.','error');return}selectedFile=f;fileNameEl.textContent=f.name;fileSizeEl.textContent=formatBytes(f.size);filePrev.classList.add('active');uploadArea.style.display='none';hideMsg()}
   function clearFile(){selectedFile=null;fileInput.value='';filePrev.classList.remove('active');uploadArea.style.display=''}
   function formatBytes(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(1)+' MB'}
-  var reqIds=['sl_fullName','sl_email','sl_phone','sl_location','sl_show','sl_role','sl_experience','sl_conflicts'];
-  function validate(){var ok=true;reqIds.forEach(function(id){var el=document.getElementById(id),w=el.closest('.field');if(!el.value.trim()){w.classList.add('field-error');ok=false}else{w.classList.remove('field-error')}});var em=document.getElementById('sl_email');if(em.value.trim()&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value.trim())){em.closest('.field').classList.add('field-error');ok=false}return ok}
+
+  // ── Validation ──────────────────────────────────────
+  var baseReqIds=['sl_fullName','sl_email','sl_phone','sl_location','sl_show','sl_role','sl_experience','sl_conflicts'];
+
+  function validate(){
+    var ok=true;
+    baseReqIds.forEach(function(id){
+      var el=document.getElementById(id),w=el.closest('.field');
+      if(!el.value.trim()){w.classList.add('field-error');ok=false}
+      else{w.classList.remove('field-error')}
+    });
+    var em=document.getElementById('sl_email');
+    if(em.value.trim()&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value.trim())){em.closest('.field').classList.add('field-error');ok=false}
+    return ok;
+  }
+
   document.querySelectorAll('input,textarea,select').forEach(function(el){el.addEventListener('input',function(){var f=el.closest('.field');if(f)f.classList.remove('field-error')})});
-  form.addEventListener('submit',function(e){e.preventDefault();hideMsg();if(!validate()){showMsg('Please fill in all required fields.','error');var f=document.querySelector('.field-error');if(f)f.scrollIntoView({behavior:'smooth',block:'center'});return}
-    var p={fullName:document.getElementById('sl_fullName').value.trim(),email:document.getElementById('sl_email').value.trim(),phone:document.getElementById('sl_phone').value.trim(),age:document.getElementById('sl_age').value.trim(),location:document.getElementById('sl_location').value.trim(),show:document.getElementById('sl_show').value.trim(),role:document.getElementById('sl_role').value.trim(),experience:document.getElementById('sl_experience').value.trim(),conflicts:document.getElementById('sl_conflicts').value.trim(),notes:document.getElementById('sl_notes').value.trim(),youtubeUrl:document.getElementById('sl_youtubeUrl').value.trim(),sendCopy:document.getElementById('sl_sendCopy').checked};
-    if(p.youtubeUrl&&!/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\/.+/.test(p.youtubeUrl)){document.getElementById('sl_youtubeUrl').closest('.field').classList.add('field-error');showMsg('Please enter a valid YouTube URL.','error');return}
-    if(!selectedFile&&!p.youtubeUrl){showMsg('Please upload a video file or provide a YouTube link.','error');return}
+
+  // ── Submit ──────────────────────────────────────────
+  form.addEventListener('submit',function(e){
+    e.preventDefault();hideMsg();
+    if(!validate()){showMsg('Please fill in all required fields.','error');var f=document.querySelector('.field-error');if(f)f.scrollIntoView({behavior:'smooth',block:'center'});return}
+
+    var youtubeUrl = auditionType === 'virtual' ? document.getElementById('sl_youtubeUrl').value.trim() : '';
+    var notes = auditionType === 'virtual' ? document.getElementById('sl_notes').value.trim() : document.getElementById('sl_notes_ip').value.trim();
+
+    var p={
+      fullName:document.getElementById('sl_fullName').value.trim(),
+      email:document.getElementById('sl_email').value.trim(),
+      phone:document.getElementById('sl_phone').value.trim(),
+      age:document.getElementById('sl_age').value.trim(),
+      location:document.getElementById('sl_location').value.trim(),
+      show:document.getElementById('sl_show').value.trim(),
+      role:document.getElementById('sl_role').value.trim(),
+      experience:document.getElementById('sl_experience').value.trim(),
+      conflicts:document.getElementById('sl_conflicts').value.trim(),
+      notes:notes,
+      youtubeUrl:youtubeUrl,
+      auditionType:auditionType,
+      sendCopy:document.getElementById('sl_sendCopy').checked
+    };
+
+    // YouTube URL validation (virtual only)
+    if(auditionType === 'virtual' && p.youtubeUrl && !/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\/.+/.test(p.youtubeUrl)){
+      document.getElementById('sl_youtubeUrl').closest('.field').classList.add('field-error');
+      showMsg('Please enter a valid YouTube URL.','error');return;
+    }
+
+    // Require video or YouTube link for virtual auditions
+    if(auditionType === 'virtual' && !selectedFile && !p.youtubeUrl){
+      showMsg('Please upload a video file or provide a YouTube link.','error');return;
+    }
+
     submitBtn.disabled=true;submitBtn.textContent='Submitting...';
-    if(selectedFile){progressC.classList.add('active');progText.textContent='Reading video...';progFill.style.width='10%';readBase64(selectedFile).then(function(b64){p.fileName=selectedFile.name;p.fileType=selectedFile.type||'video/mp4';p.fileData=b64;progText.textContent='Uploading...';progFill.style.width='30%';postToAppsScript(p)}).catch(function(){showMsg('Could not read the file. Please try again.','error');resetBtn()})}else{submitViaJSONP(p)}
+
+    if(selectedFile && auditionType === 'virtual'){
+      progressC.classList.add('active');progText.textContent='Reading video...';progFill.style.width='10%';
+      readBase64(selectedFile).then(function(b64){
+        p.fileName=selectedFile.name;p.fileType=selectedFile.type||'video/mp4';p.fileData=b64;
+        progText.textContent='Uploading...';progFill.style.width='30%';
+        postToAppsScript(p);
+      }).catch(function(){showMsg('Could not read the file. Please try again.','error');resetBtn()});
+    } else {
+      submitViaJSONP(p);
+    }
   });
-  function postToAppsScript(p){fetch(APPS_SCRIPT_URL,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain'},body:JSON.stringify(p)}).then(function(r){progFill.style.width='90%';return r.json().catch(function(){return{success:true}})}).then(function(r){progFill.style.width='100%';progText.textContent='Done!';if(r&&r.success!==false){onSuccess()}else{showMsg((r&&r.error)||'Something went wrong.','error');resetBtn()}}).catch(function(){fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(p)}).then(function(){progFill.style.width='100%';progText.textContent='Done!';onSuccess()}).catch(function(){showMsg('Submission failed. Please try again or email auditions@streetlamp.org.','error');resetBtn()})})}
-  function submitViaJSONP(p){window.slCallback=function(r){if(r&&r.success){onSuccess()}else{showMsg((r&&r.error)||'Something went wrong.','error');resetBtn()}};var s=document.createElement('script');s.src=APPS_SCRIPT_URL+'?callback=slCallback&payload='+encodeURIComponent(JSON.stringify(p));s.onload=function(){try{document.head.removeChild(s)}catch(e){}};s.onerror=function(){showMsg('Submission failed. Please try again or email auditions@streetlamp.org.','error');resetBtn();try{document.head.removeChild(s)}catch(e){}};document.head.appendChild(s)}
+
+  // ── POST (file uploads) ─────────────────────────────
+  function postToAppsScript(p){
+    fetch(APPS_SCRIPT_URL,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain'},body:JSON.stringify(p)})
+    .then(function(r){progFill.style.width='90%';return r.json().catch(function(){return{success:true}})})
+    .then(function(r){progFill.style.width='100%';progText.textContent='Done!';if(r&&r.success!==false){onSuccess()}else{showMsg((r&&r.error)||'Something went wrong.','error');resetBtn()}})
+    .catch(function(){
+      fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(p)})
+      .then(function(){progFill.style.width='100%';progText.textContent='Done!';onSuccess()})
+      .catch(function(){showMsg('Submission failed. Please try again or email auditions@streetlamp.org.','error');resetBtn()})
+    });
+  }
+
+  // ── JSONP (text-only) ───────────────────────────────
+  function submitViaJSONP(p){
+    window.slCallback=function(r){if(r&&r.success){onSuccess()}else{showMsg((r&&r.error)||'Something went wrong.','error');resetBtn()}};
+    var s=document.createElement('script');
+    s.src=APPS_SCRIPT_URL+'?callback=slCallback&payload='+encodeURIComponent(JSON.stringify(p));
+    s.onload=function(){try{document.head.removeChild(s)}catch(e){}};
+    s.onerror=function(){showMsg('Submission failed. Please try again or email auditions@streetlamp.org.','error');resetBtn();try{document.head.removeChild(s)}catch(e){}};
+    document.head.appendChild(s);
+  }
+
   function onSuccess(){form.style.display='none';successEl.classList.add('active');hideMsg();successEl.scrollIntoView({behavior:'smooth',block:'start'})}
-  resetLink.addEventListener('click',function(){form.reset();clearFile();form.style.display='';successEl.classList.remove('active');resetBtn();hideMsg();window.scrollTo({top:0,behavior:'smooth'})});
+
+  // ── Reset (goes back to type selector) ──────────────
+  resetLink.addEventListener('click',function(){
+    form.reset();clearFile();
+    form.style.display='';successEl.classList.remove('active');
+    document.getElementById('formWrapper').style.display='none';
+    document.getElementById('typeSelector').style.display='';
+    auditionType='';
+    resetBtn();hideMsg();
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+
   function readBase64(f){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(r.result.split(',')[1])};r.onerror=rej;r.readAsDataURL(f)})}
   function resetBtn(){submitBtn.disabled=false;submitBtn.textContent='Submit Audition';progressC.classList.remove('active');progFill.style.width='0%'}
-  function showMsg(t,c){globalMsg.textContent=t;globalMsg.className='message '+c}function hideMsg(){globalMsg.className='message';globalMsg.textContent=''}
+  function showMsg(t,c){globalMsg.textContent=t;globalMsg.className='message '+c}
+  function hideMsg(){globalMsg.className='message';globalMsg.textContent=''}
 })();
 </script>
 </body>
