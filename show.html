@@ -223,14 +223,14 @@ function downloadCSV() {
   var csvRows = [['Name', 'Email', 'Phone', 'Desired Role(s)']];
   allSubs.forEach(function(s) {
     csvRows.push([
-      '"' + (s['Full Name'] || '').replace(/"/g, '""') + '"',
-      '"' + (s['Email'] || '').replace(/"/g, '""') + '"',
-      '"' + (s['Phone'] || '').replace(/"/g, '""') + '"',
-      '"' + (s['Role'] || '').replace(/"/g, '""') + '"'
+      '"' + String(s['Full Name'] || '').replace(/"/g, '""') + '"',
+      '"' + String(s['Email'] || '').replace(/"/g, '""') + '"',
+      '"' + String(s['Phone'] || '').replace(/"/g, '""') + '"',
+      '"' + String(s['Role'] || '').replace(/"/g, '""') + '"'
     ]);
   });
   var csv = csvRows.map(function(r) { return r.join(','); }).join('\n');
-  var fileName = showName.replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, '_') + '_Auditionees.csv';
+  var fileName = String(showName).replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, '_') + '_Auditionees.csv';
   var a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = fileName;
