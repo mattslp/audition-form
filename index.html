@@ -119,13 +119,6 @@
   function resetBtn(){submitBtn.disabled=false;submitBtn.textContent='Submit Audition';progressC.classList.remove('active');progFill.style.width='0%'}
   function showMsg(t,c){globalMsg.textContent=t;globalMsg.className='message '+c}function hideMsg(){globalMsg.className='message';globalMsg.textContent=''}
 })();
-  function resizeIframe() {
-  const height = document.documentElement.scrollHeight;
-  window.parent.postMessage({ type: 'resize', height }, '*');
-}
-
-window.addEventListener('load', resizeIframe);
-window.addEventListener('input', resizeIframe);
 </script>
 </body>
 </html>
