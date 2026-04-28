@@ -6,7 +6,7 @@
   <title>Admin — Street Lamp Auditions</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Quasimoda', -apple-system, BlinkMacSystemFont, sans-serif; background: #fdfdfd; color: #1a1a1a; line-height: 1.6; }
+    body { font-family: 'Quasimoda', -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f5f5; color: #1a1a1a; line-height: 1.6; }
     .container { max-width: 960px; margin: 0 auto; padding: 40px 24px; }
     h1 { font-family: 'Komet', Georgia, serif; font-size: 1.8rem; margin-bottom: 8px; }
     h2 { font-family: 'Komet', Georgia, serif; font-size: 1.3rem; margin-bottom: 16px; }
@@ -249,9 +249,14 @@ function renderSubmissions() {
       + '<div class="card-header"><div><div class="card-name">' + esc(s['Full Name']) + ' ' + badgeHtml + typeBadge + '</div>'
       + '<div class="card-meta">' + formatTimestamp(s['Timestamp']) + ' · ' + esc(s['Location']) + '</div></div></div>'
       + '<div class="card-detail"><strong>Show:</strong> ' + esc(s['Show']) + '</div>'
-      + '<div class="card-detail"><strong>Role:</strong> ' + esc(s['Role']) + '</div>'
+      + '<div class="card-detail"><strong>1st Choice:</strong> ' + esc(s['Role 1st Choice']) + (s['Role 2nd Choice'] ? ' · <strong>2nd Choice:</strong> ' + esc(s['Role 2nd Choice']) : '') + '</div>'
+      + '<div class="card-detail"><strong>Consider Other Roles:</strong> ' + esc(s['Consider Other Roles']) + ' · <strong>Any Gender:</strong> ' + esc(s['Any Gender Role']) + '</div>'
       + '<div class="card-detail"><strong>Email:</strong> ' + esc(s['Email']) + ' · <strong>Phone:</strong> ' + esc(s['Phone']) + '</div>'
+      + (s['Pronouns'] ? '<div class="card-detail"><strong>Pronouns:</strong> ' + esc(s['Pronouns']) + '</div>' : '')
       + (s['Age'] ? '<div class="card-detail"><strong>Age:</strong> ' + esc(s['Age']) + '</div>' : '')
+      + (s['Height'] ? '<div class="card-detail"><strong>Height:</strong> ' + esc(s['Height']) + '</div>' : '')
+      + (s['Hair Color'] ? '<div class="card-detail"><strong>Hair Color:</strong> ' + esc(s['Hair Color']) + (s['Alter Hair'] ? ' · <strong>Willing to Alter:</strong> ' + esc(s['Alter Hair']) : '') + '</div>' : '')
+      + (s['Parent Name'] ? '<div class="card-detail"><strong>Parent/Guardian:</strong> ' + esc(s['Parent Name']) + (s['Parent Phone'] ? ' · ' + esc(s['Parent Phone']) : '') + (s['Parent Email'] ? ' · ' + esc(s['Parent Email']) : '') + '</div>' : '')
       + (s['Experience'] ? '<div class="card-detail"><strong>Experience:</strong> ' + esc(s['Experience']) + '</div>' : '')
       + (s['Conflicts'] ? '<div class="card-detail"><strong>Conflicts:</strong> ' + esc(s['Conflicts']) + '</div>' : '')
       + (s['Notes'] ? '<div class="card-detail"><strong>Notes:</strong> ' + esc(s['Notes']) + '</div>' : '')
