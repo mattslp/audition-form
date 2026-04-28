@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin — Street Lamp Auditions</title>
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <title>Admin — Street Lamp Auditions</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Quasimoda', -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f5f5; color: #1a1a1a; line-height: 1.6; }
@@ -291,7 +291,7 @@ function renderShows() {
       : '<span class="badge" style="background:#2ecc71;color:#fff;">Open</span>';
     var toggleLabel = isClosed ? 'Reopen' : 'Close';
     html += '<div class="show-row">'
-      + '<div><div class="show-name">' + esc(s.name) + ' ' + statusBadge + '</div>'
+      + '<div><div class="show-name">' + statusBadge + ' ' + esc(s.name) + '</div>'
       + '<div class="show-link">' + count + ' audition' + (count !== 1 ? 's' : '') + ' · <a href="' + showUrl + '" target="_blank">Public link</a></div></div>'
       + '<div style="display:flex;gap:8px;">'
       + '<button class="btn btn-sm btn-secondary" onclick="toggleShow(\'' + esc(s.name) + '\')">' + toggleLabel + '</button>'
