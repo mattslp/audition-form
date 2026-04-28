@@ -96,14 +96,27 @@
     <form id="slForm" novalidate>
       <div class="form-section"><div class="section-title">Personal Information</div>
         <div class="field"><label for="sl_fullName">Full Name <span class="req">*</span></label><input type="text" id="sl_fullName" placeholder="First and Last Name" required><div class="err-msg">Please enter your name.</div></div>
+        <div class="field"><label for="sl_pronouns">Preferred Pronouns <span class="opt">(optional)</span></label><input type="text" id="sl_pronouns" placeholder="e.g. she/her, he/him, they/them"></div>
         <div class="row"><div class="field"><label for="sl_email">Email <span class="req">*</span></label><input type="email" id="sl_email" placeholder="you@example.com" required><div class="err-msg">Please enter a valid email.</div></div>
         <div class="field"><label for="sl_phone">Phone <span class="req">*</span></label><input type="tel" id="sl_phone" placeholder="(555) 555-5555" required><div class="err-msg">Please enter your phone number.</div></div></div>
         <div class="field"><label for="sl_age">Age <span class="opt">(optional)</span></label><input type="number" id="sl_age" min="4" max="120" placeholder="e.g. 15"></div>
+        <div class="row"><div class="field"><label for="sl_height">Height <span class="opt">(optional)</span></label><input type="text" id="sl_height" placeholder="e.g. 5'6&quot;"></div>
+        <div class="field"><label for="sl_hairColor">Hair Color <span class="opt">(optional)</span></label><input type="text" id="sl_hairColor" placeholder="e.g. Brown"></div></div>
+        <div class="field"><label for="sl_alterHair">Are you willing to alter your hair style/color? <span class="opt">(optional)</span></label><select id="sl_alterHair"><option value="" selected>Select</option><option value="Yes">Yes</option><option value="No">No</option><option value="Maybe">Maybe / Depends</option></select></div>
+        <div class="field" id="parentSection" style="border-top:1px solid #eee;padding-top:16px;margin-top:8px;">
+          <label style="margin-bottom:12px;">Parent/Guardian Contact <span class="opt">(if under 18)</span></label>
+          <div class="field"><input type="text" id="sl_parentName" placeholder="Parent/Guardian Name"></div>
+          <div class="row"><div class="field"><input type="tel" id="sl_parentPhone" placeholder="Parent Phone"></div>
+          <div class="field"><input type="email" id="sl_parentEmail" placeholder="Parent Email"></div></div>
+        </div>
       </div>
       <div class="form-section"><div class="section-title">Audition Details</div>
         <div class="field"><label for="sl_location">Location <span class="req">*</span></label><select id="sl_location" required><option value="" disabled selected>Select a location</option><option value="Rising Sun">Rising Sun</option><option value="Kennett Square">Kennett Square</option></select><div class="err-msg">Please select a location.</div></div>
         <div class="field"><label for="sl_show">Show / Production <span class="req">*</span></label><input type="text" id="sl_show" placeholder="e.g. Annie, Seussical, Matilda Jr." required><div class="err-msg">Please enter the show name.</div></div>
-        <div class="field"><label for="sl_role">Desired Role(s) <span class="req">*</span></label><input type="text" id="sl_role" placeholder="e.g. Annie, Cat in the Hat, Any role" required><div class="err-msg">Please enter at least one role.</div></div>
+        <div class="row"><div class="field"><label for="sl_role1">1st Choice Role <span class="req">*</span></label><input type="text" id="sl_role1" placeholder="e.g. Annie" required><div class="err-msg">Please enter your first choice role.</div></div>
+        <div class="field"><label for="sl_role2">2nd Choice Role <span class="opt">(optional)</span></label><input type="text" id="sl_role2" placeholder="e.g. Miss Hannigan"></div></div>
+        <div class="row"><div class="field"><label for="sl_considerOther">Would you consider other roles? <span class="req">*</span></label><select id="sl_considerOther" required><option value="" disabled selected>Select</option><option value="Yes">Yes</option><option value="No">No</option></select><div class="err-msg">Please select an option.</div></div>
+        <div class="field"><label for="sl_anyGender">Would you consider playing a role of any gender? <span class="req">*</span></label><select id="sl_anyGender" required><option value="" disabled selected>Select</option><option value="Yes">Yes</option><option value="No">No</option></select><div class="err-msg">Please select an option.</div></div></div>
         <div class="field"><label for="sl_experience">Previous Experience <span class="req">*</span></label><textarea id="sl_experience" rows="3" placeholder="List any relevant theatre, singing, or dance experience..."></textarea><div class="err-msg">Please describe your experience.</div></div>
         <div class="field"><label for="sl_conflicts">Schedule Conflicts <span class="req">*</span></label><textarea id="sl_conflicts" rows="2" placeholder="List any dates you are unavailable for rehearsals or performances..."></textarea><div class="err-msg">Please list any conflicts, or write "None".</div></div>
       </div>
@@ -181,7 +194,7 @@
   function formatBytes(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(1)+' MB'}
 
   // ── Validation ──────────────────────────────────────
-  var baseReqIds=['sl_fullName','sl_email','sl_phone','sl_location','sl_show','sl_role','sl_experience','sl_conflicts'];
+  var baseReqIds=['sl_fullName','sl_email','sl_phone','sl_location','sl_show','sl_role1','sl_considerOther','sl_anyGender','sl_experience','sl_conflicts'];
 
   function validate(){
     var ok=true;
@@ -207,12 +220,22 @@
 
     var p={
       fullName:document.getElementById('sl_fullName').value.trim(),
+      pronouns:document.getElementById('sl_pronouns').value.trim(),
       email:document.getElementById('sl_email').value.trim(),
       phone:document.getElementById('sl_phone').value.trim(),
       age:document.getElementById('sl_age').value.trim(),
+      height:document.getElementById('sl_height').value.trim(),
+      hairColor:document.getElementById('sl_hairColor').value.trim(),
+      alterHair:document.getElementById('sl_alterHair').value,
+      parentName:document.getElementById('sl_parentName').value.trim(),
+      parentPhone:document.getElementById('sl_parentPhone').value.trim(),
+      parentEmail:document.getElementById('sl_parentEmail').value.trim(),
       location:document.getElementById('sl_location').value.trim(),
       show:document.getElementById('sl_show').value.trim(),
-      role:document.getElementById('sl_role').value.trim(),
+      role1:document.getElementById('sl_role1').value.trim(),
+      role2:document.getElementById('sl_role2').value.trim(),
+      considerOtherRoles:document.getElementById('sl_considerOther').value,
+      anyGenderRole:document.getElementById('sl_anyGender').value,
       experience:document.getElementById('sl_experience').value.trim(),
       conflicts:document.getElementById('sl_conflicts').value.trim(),
       notes:notes,
