@@ -242,6 +242,10 @@ function renderSubmissions() {
     if (s['File URL']) videoHtml += '<a href="' + esc(s['File URL']) + '" target="_blank">Uploaded File</a>';
     if (!videoHtml) videoHtml = '<span style="color:#aaa;">No video</span>';
 
+    var resumeHtml = '';
+    if (s['Resume URL']) resumeHtml += '<a href="' + esc(s['Resume URL']) + '" target="_blank">Resume (uploaded)</a> ';
+    if (s['Resume Link']) resumeHtml += '<a href="' + esc(s['Resume Link']) + '" target="_blank">Resume (link)</a>';
+
     var showOptions = '<option value="">— Assign to show —</option>';
     shows.forEach(function(sh) {
       showOptions += '<option value="' + esc(sh.name) + '"' + (assignment === sh.name ? ' selected' : '') + '>' + esc(sh.name) + '</option>';
@@ -264,6 +268,7 @@ function renderSubmissions() {
       + (s['Conflicts'] ? '<div class="card-detail"><strong>Conflicts:</strong> ' + esc(s['Conflicts']) + '</div>' : '')
       + (s['Notes'] ? '<div class="card-detail"><strong>Notes:</strong> ' + esc(s['Notes']) + '</div>' : '')
       + '<div class="card-video">' + videoHtml + '</div>'
+      + (resumeHtml ? '<div class="card-video">' + resumeHtml + '</div>' : '')
       + '<div class="card-actions">'
       + '<select onchange="handleAssignChange(\'' + esc(s['ID']) + '\', this)">' + showOptions + '</select>'
       + (assignment ? ' <button class="btn btn-sm btn-secondary" onclick="unassignSubmission(\'' + esc(s['ID']) + '\')">Unassign</button>' : '')
