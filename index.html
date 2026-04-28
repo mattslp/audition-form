@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Audition Submission — Street Lamp</title>
@@ -118,7 +115,7 @@
       </div>
       <div class="form-section"><div class="section-title">Audition Details</div>
         <div class="field"><label for="sl_location">Location <span class="req">*</span></label><select id="sl_location" required><option value="" disabled selected>Select a location</option><option value="Rising Sun">Rising Sun</option><option value="Kennett Square">Kennett Square</option></select><div class="err-msg">Please select a location.</div></div>
-        <div class="field"><label for="sl_show">Show / Production <span class="req">*</span></label><input type="text" id="sl_show" placeholder="e.g. Annie, Seussical, Matilda Jr." required><div class="err-msg">Please enter the show name.</div></div>
+        <div class="field"><label for="sl_show">Show / Production <span class="req">*</span></label><select id="sl_show" required><option value="" disabled selected>Loading shows...</option></select><div class="err-msg">Please select a show.</div></div>
         <div class="row"><div class="field"><label for="sl_role1">1st Choice Role <span class="req">*</span></label><input type="text" id="sl_role1" placeholder="e.g. Annie" required><div class="err-msg">Please enter your first choice role.</div></div>
         <div class="field"><label for="sl_role2">2nd Choice Role <span class="opt">(optional)</span></label><input type="text" id="sl_role2" placeholder="e.g. Miss Hannigan"></div></div>
         <div class="row"><div class="field"><label for="sl_considerOther">Would you consider other roles? <span class="req">*</span></label><select id="sl_considerOther" required><option value="" disabled selected>Select</option><option value="Yes">Yes</option><option value="No">No</option></select><div class="err-msg">Please select an option.</div></div>
@@ -160,6 +157,31 @@
   var APPS_SCRIPT_URL = 'https://script.google.com/a/macros/streetlamp.org/s/AKfycbzdPHLpGNRG5ORBCneZH2TGmzM0Hi2xJnhDKkXM3sn0IbvzD18CWUDpZ_AuTPTvpie5/exec';
   var selectedFile = null, MAX_SIZE = 50 * 1024 * 1024;
   var auditionType = '';
+
+  // ── Load open shows into dropdown ───────────────────
+  (function loadShows() {
+    var cbName = 'slLoadShows_' + Date.now();
+    window[cbName] = function(r) {
+      var sel = document.getElementById('sl_show');
+      sel.innerHTML = '<option value="" disabled selected>Select a show</option>';
+      if (r && r.success && r.shows.length > 0) {
+        r.shows.forEach(function(s) {
+          var opt = document.createElement('option');
+          opt.value = s.name;
+          opt.textContent = s.name;
+          sel.appendChild(opt);
+        });
+      } else {
+        sel.innerHTML = '<option value="" disabled selected>No shows currently open</option>';
+      }
+      delete window[cbName];
+    };
+    var s = document.createElement('script');
+    s.src = APPS_SCRIPT_URL + '?callback=' + cbName + '&payload=' + encodeURIComponent(JSON.stringify({ action: 'getOpenShows' })) + '&_=' + Date.now();
+    s.onload = function() { try { document.head.removeChild(s); } catch(e) {} };
+    s.onerror = function() { delete window[cbName]; try { document.head.removeChild(s); } catch(e) {} };
+    document.head.appendChild(s);
+  })();
 
   // ── Type selection ──────────────────────────────────
   window.goBack = function() {
