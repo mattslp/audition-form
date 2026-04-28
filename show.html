@@ -187,6 +187,10 @@ function buildCard(s, isViewedCard) {
     videoHtml += '<a href="' + esc(s['File URL']) + '" target="_blank">View Video File</a>';
   }
 
+  var resumeHtml = '';
+  if (s['Resume URL']) resumeHtml += '<a href="' + esc(s['Resume URL']) + '" target="_blank">View Resume</a> ';
+  if (s['Resume Link']) resumeHtml += '<a href="' + esc(s['Resume Link']) + '" target="_blank">Resume Link</a>';
+
   var btnHtml = isViewedCard
     ? '<button class="btn btn-unview" onclick="markUnviewed(\'' + escAttr(s['Full Name']) + '\')">Mark as unviewed</button>'
     : '<button class="btn btn-viewed" onclick="markViewed(\'' + escAttr(s['Full Name']) + '\')">Mark as viewed</button>';
@@ -209,6 +213,7 @@ function buildCard(s, isViewedCard) {
     + (s['Conflicts'] ? '<div class="card-detail"><strong>Conflicts:</strong> ' + esc(s['Conflicts']) + '</div>' : '')
     + (s['Notes'] ? '<div class="card-detail"><strong>Notes:</strong> ' + esc(s['Notes']) + '</div>' : '')
     + (videoHtml ? '<div class="card-video">' + videoHtml + '</div>' : '')
+    + (resumeHtml ? '<div class="card-video">' + resumeHtml + '</div>' : '')
     + '<div class="card-actions">' + btnHtml + '</div>'
     + '</div>';
 }
