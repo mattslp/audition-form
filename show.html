@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Auditions — Street Lamp</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -106,8 +106,10 @@ function loadShow(name) {
 
 function render(name) {
   var typeFilter = document.getElementById('showTypeFilter') ? document.getElementById('showTypeFilter').value : '';
+  var roleFilter = document.getElementById('showRoleFilter') ? document.getElementById('showRoleFilter').value : '';
   var filteredSubs = allSubs.filter(function(s) {
     if (typeFilter && (s['Audition Type'] || 'virtual') !== typeFilter) return false;
+    if (roleFilter && String(s['Role 1st Choice'] || '') !== roleFilter) return false;
     return true;
   });
 
@@ -122,6 +124,14 @@ function render(name) {
     }
   });
 
+  // Build role options from all submissions
+  var roles = {};
+  allSubs.forEach(function(s) { if (s['Role 1st Choice']) roles[String(s['Role 1st Choice'])] = true; });
+  var roleOptions = '<option value="">All Roles</option>';
+  Object.keys(roles).sort().forEach(function(r) {
+    roleOptions += '<option value="' + esc(r) + '"' + (roleFilter === r ? ' selected' : '') + '>' + esc(r) + '</option>';
+  });
+
   var headerHtml = '<h1>' + esc(name) + '</h1>'
     + '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px;">'
     + '<span class="count" style="margin:0;">' + filteredSubs.length + ' audition' + (filteredSubs.length !== 1 ? 's' : '')
@@ -130,6 +140,9 @@ function render(name) {
     + '<option value=""' + (!typeFilter ? ' selected' : '') + '>All Types</option>'
     + '<option value="in-person"' + (typeFilter === 'in-person' ? ' selected' : '') + '>In-Person</option>'
     + '<option value="virtual"' + (typeFilter === 'virtual' ? ' selected' : '') + '>Virtual</option>'
+    + '</select>'
+    + '<select id="showRoleFilter" onchange="render(\'' + escAttr(name) + '\')" style="padding:6px 10px;font-size:0.82rem;border:1px solid #ccc;border-radius:4px;font-family:inherit;">'
+    + roleOptions
     + '</select>'
     + '<button onclick="downloadCSV()" style="padding:6px 14px;font-size:0.82rem;font-weight:600;border:1px solid #ccc;border-radius:4px;background:#fff;cursor:pointer;font-family:inherit;">Download Auditionee List</button>'
     + '</div>';
