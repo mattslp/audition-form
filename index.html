@@ -56,6 +56,9 @@
     .success-state p { color: #888; font-size: 0.95rem; }
     .reset-link { display: inline-block; margin-top: 24px; color: #333; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 0.9rem; } .reset-link:hover { color: #1a1a1a; }
     .back-btn { background: none; border: none; font-family: inherit; font-size: 0.85rem; color: #888; cursor: pointer; padding: 4px 0; margin-bottom: 12px; } .back-btn:hover { color: #333; }
+    .fade-out { opacity: 0; transition: opacity 0.25s ease; }
+    .fade-in { opacity: 0; animation: fadeIn 0.3s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     /* Type selector */
     .type-selector { text-align: center; padding: 60px 24px; }
@@ -157,25 +160,41 @@
 
   // ── Type selection ──────────────────────────────────
   window.goBack = function() {
-    document.getElementById('formWrapper').style.display = 'none';
-    document.getElementById('typeSelector').style.display = '';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    var formWrapper = document.getElementById('formWrapper');
+    var typeSelector = document.getElementById('typeSelector');
+    formWrapper.classList.add('fade-out');
+    setTimeout(function() {
+      formWrapper.style.display = 'none';
+      formWrapper.classList.remove('fade-out');
+      typeSelector.style.display = '';
+      typeSelector.classList.add('fade-in');
+      setTimeout(function() { typeSelector.classList.remove('fade-in'); }, 300);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 250);
   };
 
   window.selectType = function(type) {
     auditionType = type;
-    document.getElementById('typeSelector').style.display = 'none';
-    document.getElementById('formWrapper').style.display = 'block';
+    var typeSelector = document.getElementById('typeSelector');
+    var formWrapper = document.getElementById('formWrapper');
+    typeSelector.classList.add('fade-out');
+    setTimeout(function() {
+      typeSelector.style.display = 'none';
+      typeSelector.classList.remove('fade-out');
+      formWrapper.style.display = 'block';
+      formWrapper.classList.add('fade-in');
+      setTimeout(function() { formWrapper.classList.remove('fade-in'); }, 300);
 
-    if (type === 'in-person') {
-      document.getElementById('videoSection').style.display = 'none';
-      document.getElementById('notesSection').style.display = '';
-    } else {
-      document.getElementById('videoSection').style.display = '';
-      document.getElementById('notesSection').style.display = 'none';
-    }
+      if (type === 'in-person') {
+        document.getElementById('videoSection').style.display = 'none';
+        document.getElementById('notesSection').style.display = '';
+      } else {
+        document.getElementById('videoSection').style.display = '';
+        document.getElementById('notesSection').style.display = 'none';
+      }
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 250);
   };
 
   // ── DOM refs ────────────────────────────────────────
