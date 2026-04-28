@@ -145,6 +145,18 @@
         <div class="field"><label for="sl_notes_ip">Additional Notes <span class="opt">(optional)</span></label><textarea id="sl_notes_ip" rows="2" placeholder="Anything else you'd like us to know..."></textarea></div>
       </div>
 
+      <!-- RESUME SECTION (shown for both types) -->
+      <div class="form-section">
+        <div class="section-title">Resume</div>
+        <p style="font-size:0.875rem;color:#888;margin-bottom:16px;">Upload a resume file or provide a link (both optional).</p>
+        <div class="field"><label>Upload Resume <span class="opt">(optional)</span></label>
+          <div class="upload-area" id="slResumeUploadArea"><input type="file" id="slResumeInput" accept=".pdf,.doc,.docx,image/*"><svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg><div class="upload-label">Drag &amp; drop or <span>browse</span></div><div class="upload-hint">PDF, Word, or image — up to 10 MB</div></div>
+          <div class="file-preview" id="slResumePreview"><div class="file-info"><div class="file-name" id="slResumeName"></div><div class="file-size" id="slResumeSize"></div></div><button type="button" class="file-remove" id="slResumeRemove" title="Remove file">&times;</button></div>
+          <div class="progress-container" id="slResumeProgress"><div class="progress-bar-bg"><div class="progress-fill" id="slResumeProgressFill"></div></div><div class="progress-text" id="slResumeProgressText">Uploading resume...</div></div>
+        </div>
+        <div class="field"><label for="sl_resumeUrl">Or link to your resume <span class="opt">(optional)</span></label><input type="text" id="sl_resumeUrl" placeholder="https://..."></div>
+      </div>
+
       <div class="form-section" style="padding-bottom:28px;">
         <div class="field" style="display:flex;align-items:center;gap:10px;margin-bottom:18px;"><input type="checkbox" id="sl_sendCopy" style="width:auto;accent-color:#333;cursor:pointer;"><label for="sl_sendCopy" style="margin:0;font-weight:400;font-size:0.9rem;cursor:pointer;">Send me a copy of this submission</label></div>
         <button type="submit" class="submit-btn" id="slSubmitBtn">Submit Audition</button>
@@ -240,6 +252,21 @@
   function clearFile(){selectedFile=null;fileInput.value='';filePrev.classList.remove('active');uploadArea.style.display=''}
   function formatBytes(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(1)+' MB'}
 
+  // ── Resume file handling ────────────────────────────
+  var selectedResume = null;
+  var RESUME_MAX = 10 * 1024 * 1024;
+  var resumeArea=document.getElementById('slResumeUploadArea'),resumeInput=document.getElementById('slResumeInput'),resumePrev=document.getElementById('slResumePreview'),resumeNameEl=document.getElementById('slResumeName'),resumeSizeEl=document.getElementById('slResumeSize'),resumeRemove=document.getElementById('slResumeRemove'),resumeProgressC=document.getElementById('slResumeProgress'),resumeProgFill=document.getElementById('slResumeProgressFill'),resumeProgText=document.getElementById('slResumeProgressText');
+
+  resumeArea.addEventListener('click',function(){resumeInput.click()});
+  resumeArea.addEventListener('dragover',function(e){e.preventDefault();resumeArea.classList.add('dragover')});
+  resumeArea.addEventListener('dragleave',function(){resumeArea.classList.remove('dragover')});
+  resumeArea.addEventListener('drop',function(e){e.preventDefault();resumeArea.classList.remove('dragover');if(e.dataTransfer.files.length)handleResume(e.dataTransfer.files[0])});
+  resumeInput.addEventListener('change',function(){if(resumeInput.files.length)handleResume(resumeInput.files[0])});
+  resumeRemove.addEventListener('click',clearResume);
+
+  function handleResume(f){if(f.size>RESUME_MAX){showMsg('Resume file is too large. Maximum size is 10 MB.','error');return}selectedResume=f;resumeNameEl.textContent=f.name;resumeSizeEl.textContent=formatBytes(f.size);resumePrev.classList.add('active');resumeArea.style.display='none';hideMsg()}
+  function clearResume(){selectedResume=null;resumeInput.value='';resumePrev.classList.remove('active');resumeArea.style.display=''}
+
   // ── Validation ──────────────────────────────────────
   var baseReqIds=['sl_fullName','sl_email','sl_phone','sl_location','sl_show','sl_role1','sl_considerOther','sl_anyGender','sl_experience','sl_conflicts'];
 
@@ -287,6 +314,7 @@
       conflicts:document.getElementById('sl_conflicts').value.trim(),
       notes:notes,
       youtubeUrl:youtubeUrl,
+      resumeUrl:document.getElementById('sl_resumeUrl').value.trim(),
       auditionType:auditionType,
       sendCopy:document.getElementById('sl_sendCopy').checked
     };
@@ -304,16 +332,30 @@
 
     submitBtn.disabled=true;submitBtn.textContent='Submitting...';
 
-    if(selectedFile && auditionType === 'virtual'){
-      progressC.classList.add('active');progText.textContent='Reading video...';progFill.style.width='10%';
-      readBase64(selectedFile).then(function(b64){
-        p.fileName=selectedFile.name;p.fileType=selectedFile.type||'video/mp4';p.fileData=b64;
-        progText.textContent='Uploading...';progFill.style.width='30%';
+    // Read resume file if present
+    var resumePromise = selectedResume
+      ? readBase64(selectedResume).then(function(b64) {
+          p.resumeFileName = selectedResume.name;
+          p.resumeFileType = selectedResume.type || 'application/pdf';
+          p.resumeFileData = b64;
+        })
+      : Promise.resolve();
+
+    resumePromise.then(function() {
+      if(selectedFile && auditionType === 'virtual'){
+        progressC.classList.add('active');progText.textContent='Reading video...';progFill.style.width='10%';
+        readBase64(selectedFile).then(function(b64){
+          p.fileName=selectedFile.name;p.fileType=selectedFile.type||'video/mp4';p.fileData=b64;
+          progText.textContent='Uploading...';progFill.style.width='30%';
+          postToAppsScript(p);
+        }).catch(function(){showMsg('Could not read the video file. Please try again.','error');resetBtn()});
+      } else if(selectedResume) {
+        // Resume file but no video — still need POST for the file data
         postToAppsScript(p);
-      }).catch(function(){showMsg('Could not read the file. Please try again.','error');resetBtn()});
-    } else {
-      submitViaJSONP(p);
-    }
+      } else {
+        submitViaJSONP(p);
+      }
+    }).catch(function(){showMsg('Could not read the resume file. Please try again.','error');resetBtn()});
   });
 
   // ── POST (file uploads) ─────────────────────────────
@@ -342,7 +384,7 @@
 
   // ── Reset (goes back to type selector) ──────────────
   resetLink.addEventListener('click',function(){
-    form.reset();clearFile();
+    form.reset();clearFile();clearResume();
     form.style.display='';successEl.classList.remove('active');
     document.getElementById('formWrapper').style.display='none';
     document.getElementById('typeSelector').style.display='';
