@@ -246,14 +246,17 @@ function esc(str) { if (str == null) return ''; var d = document.createElement('
 function escAttr(str) { return esc(str).replace(/'/g, "\\'"); }
 
 function downloadCSV() {
-  var csvRows = [['Name', 'Email', 'Phone', '1st Choice Role', '2nd Choice Role']];
+  var csvRows = [['Name', 'Email', 'Phone', '1st Choice Role', '2nd Choice Role','Parent Name','Parent Phone','Parent Email']];
   allSubs.forEach(function(s) {
     csvRows.push([
       '"' + String(s['Full Name'] || '').replace(/"/g, '""') + '"',
       '"' + String(s['Email'] || '').replace(/"/g, '""') + '"',
       '"' + String(s['Phone'] || '').replace(/"/g, '""') + '"',
       '"' + String(s['Role 1st Choice'] || '').replace(/"/g, '""') + '"',
-      '"' + String(s['Role 2nd Choice'] || '').replace(/"/g, '""') + '"'
+      '"' + String(s['Role 2nd Choice'] || '').replace(/"/g, '""') + '"',
+      '"' + String(s['Parent Name'] || '').replace(/"/g, '""') + '"',
+      '"' + String(s['Parent Phone'] || '').replace(/"/g, '""') + '"',
+      '"' + String(s['Parent Email'] || '').replace(/"/g, '""') + '"'
     ]);
   });
   var csv = csvRows.map(function(r) { return r.join(','); }).join('\n');
